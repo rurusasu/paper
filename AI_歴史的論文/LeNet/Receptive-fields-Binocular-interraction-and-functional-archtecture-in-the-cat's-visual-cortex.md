@@ -66,6 +66,10 @@ Because of the muscle relaxant the eyes usually diverged slightly, so that point
 In stimulating the two eyes simultaneously it was therefore often necessary to use two spots placed in corresponding parts of the two visual fields.
 Moreover, at times the two eyes were slightly rotated in an inward direction in the plane of their equators.
 This rotation was estimated by (1) photographing the cat before and during the experiment, and comparing the angles of inclination of the slit-shaped pupils, or (2) by noting the inclination to the horizontal of a line joining the area centralis with the optic disk, which in the normal position of the eye was estimated, by the first method, to average about 25°.
+The combined inward rotations of the two eyes seldom exceeded 10°.
+Since the receptive fields in this study were usually centrally rather than peripherally placed on the retina, the rotations did not lead to any appreciable linear displacement.
+Angular displacements of receptive fields occasionally required correction, as they led to an apparent difference in the orientation of the two receptive-field axes of a binocularly driven unit.
+The direction and magnitude of this difference were always consistent with the estimated inward rotation of the two eyes. Moreover, in a given experiment the difference was constant, even though the axis orientation varied from cell to cell.
 
 > セントラリス領域と2つの目の視神経乳頭に対応する画面上の点は、投影法によって決定されました（Hubel＆Wiesel、1960）。
 > これらの点に関して、各受容野の位置を測定した。
@@ -73,3 +77,20 @@ This rotation was estimated by (1) photographing the cat before and during the e
 > したがって、2つの目を同時に刺激する場合、2つの視野の対応する部分に配置された2つのスポットを使用する必要がしばしばありました。
 > さらに、2つの目が赤道面で内側にわずかに回転した場合もあります。
 > この回転は、（1）実験前と実験中に猫を撮影し、スリット状の瞳孔の傾斜角度を比較することによって、または（2）領域の中心を結ぶ線の水平に対する傾斜に注目することによって推定されました。目の正常な位置にある視神経乳頭は、最初の方法で平均約25°と推定されました。
+> 2つの目の組み合わせた内向きの回転は、めったに10°を超えません。
+> この研究の受容野は、通常、網膜の末梢ではなく中央に配置されていたため、回転によって感知できるほどの直線変位は生じませんでした。
+> 両眼駆動ユニットの2つの受容野軸の向きに明らかな違いが生じたため、受容野の角変位は時々修正を必要としました。
+> この違いの方向と大きさは、常に2つの目の内向き回転の推定値と一致していました。
+> さらに、特定の実験では、軸の向きがセルごとに異なっていても、差は一定でした。
+
+The diagram of Text-fig. 1 shows the points of entry into the cortex of all 45 microelectrode penetrations.
+Most electrode tracks went no deeper than 3 or 4 mm, so that explorations were mainly limited to the apical segments of the lateral and post-lateral gyri (LG and PLG) and a few millimetres down along the adjoining medial and lateral folds.
+The extent of the territory covered is indicated roughly by Text-figs. 13-15.
+Although the lateral boundary of the striate cortex is not always sharply defined in Nissl-stained or myelinstained material, most penetrations were well within the region generally accepted as 'striate' (O'Leary, 1941).
+Most penetrations were made from the cortical region receiving projections from in or near the area centralis; this cortical region is shown in Text-fig. 1 as the area between the interrupted lines.
+
+> 図1は、45のすべての微小電極貫通の皮質への侵入点を示しています。
+> ほとんどの電極経路は3〜4 mm以下でした。そのため、探索は主に外側および後外側回（LGおよびPLG）の頂端部と、隣接する内側および外側の襞に沿って数ミリメートル下に限定されていました。
+> カバーされる領域の範囲は、大まかにテキスト図13-15で示されます。
+> 線条皮質の外側の境界は、ニッスル染色または髄鞘染色された材料で常に明確に定義されているわけではありませんが、ほとんどの貫通は一般に「線条」として認められている領域内に十分ありました（O'Leary、1941年）。
+> ほとんどの貫通は、centralis領域内またはその付近からの投影を受けている皮質領域から行われました。この皮質領域は、中断された線の間の領域として図1に表示されます。
