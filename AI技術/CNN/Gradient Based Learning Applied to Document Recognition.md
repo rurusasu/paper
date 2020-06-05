@@ -8,3 +8,13 @@
 オンライン手書き認識のための2つのシステムについて説明する。実験により、グローバルトレーニングの利点と、グラフトランスフォーマーネットワークの柔軟性が実証された。
 
 # 備考
+## 要約
+最初の優勢CNNモデルであるLeNetについて書かれた論文．
+
+[元論文](https://github.com/rurusasu/paper/blob/master/AI%E6%8A%80%E8%A1%93/CNN/%E5%85%83%E8%AB%96%E6%96%87/Gradient%20Based%20Learning%20Applied%20to%20Document.pdf)
+
+## 著者
+Yann LeCun, Leon Bottou, Yoshua Bengio, Patrick Haffner
+
+## 掲載
+Proceedings of the IEEE,  Vol. 86, No. 11, 1998.
