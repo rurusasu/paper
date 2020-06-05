@@ -1,6 +1,7 @@
 # AN ADAPTIVE "ADALINE" NEURON USING CHEMICAL "MEMISTORS"
 
 # 備考
+[元論文](https://github.com/rurusasu/paper/blob/master/AI%E6%8A%80%E8%A1%93/%E9%BB%8E%E6%98%8E%E6%9C%9F%E3%81%AE%E8%AB%96%E6%96%87/%E5%85%83%E8%AB%96%E6%96%87/An%20adaptive%20ADALINE%20neuron%20using%20chemical%20MEMISTORS.pdf)
 
 ## 著者
 B. Widrow
