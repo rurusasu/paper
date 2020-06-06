@@ -19,7 +19,7 @@ The IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 806-8
 # 1. Introduction
 "ディープラーニング。コンピュータビジョンの問題にどのくらい効果があると思いますか？" ほとんどの場合、この質問はあなたのグループの喫茶室で提起されています。それに対して誰かが最近の成功例[29, 15, 10]を引用し、他の誰かが懐疑的であることを公言した。あなたは、「残念ながら、自分のネットワークを訓練して素早く答えを見つけるための時間も、GPUプログラミングスキルも、ラベル付きの大量のデータも持っていない」と考えて、少し落ち込んで喫茶室を後にしたかもしれません。しかし，最近，畳み込みニューラルネットワークである OverFeat [38] が公開されたとき1，いくつかの実験が可能になりました．特に今、私たちが疑問に思っているのは、与えられたタスクに特化したディープネットワークを訓練できるかどうかではなく、ディープネットワーク（画像分類という特定のタスクを実行するために多様なImageNetデータベース上で注意深く訓練されたもの）によって抽出された特徴が、多種多様な視覚タスクに利用できるかどうかということでした。コンピュータビジョンの研究者であれば、同じ疑問を持ったことがあると思いますので、我々の議論と一般的な知見を関連付けることにしました。
 
-![CNN representation replaces pipelines](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC/%E7%94%BB%E5%83%8F/CNN%20representation%20replaces%20pipelines.png)\
+![CNN representation replaces pipelines](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC/CNN%20Features%20off%20the%20shelf%20an%20Astounding%20Baseline%20for%20Recognition/%E7%94%BB%E5%83%8F/CNN%20representation%20replaces%20pipelines.png)\
 図1. <br>上) CNN 表現は s.o.a 法のパイプラインに取って代わり，より良い結果を得ることができる．<br>
 下）線形SVMを用いた拡張CNN表現は，複数のタスクにおいて一貫してs.o.a.よりも優れている．特化されたCNNとは，そのタスクのためにCNNを特別に設計した他の研究を指す．
 

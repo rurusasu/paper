@@ -153,7 +153,7 @@ b) 面積変化率：この評価では、切り抜かれた画像の領域検�
 ## D. Online Generation with Untrained Object
 布を折る作業は、本を閉じる作業とよく似ています。したがって、本は訓練されていないオブジェクトでのテストに使用されます。図10に示すように、このタスクは正常に実行されます。
 
-![Book-closing test]()\
+![Book-closing test](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Book-closing%20test.bmp)\
 図10. 訓練されたオブジェクトを使用したオンライン生成テスト：本を閉じるテスト。
 
 # 5. DISCUSSION
