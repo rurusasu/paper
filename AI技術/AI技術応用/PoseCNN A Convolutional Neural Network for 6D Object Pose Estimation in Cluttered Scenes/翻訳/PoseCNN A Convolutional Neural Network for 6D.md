@@ -16,7 +16,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 本論文では、既存のメソッドの制限を克服しようとする6Dオブジェクト姿勢推定の一般的なフレームワークを提案します。 PoseCNNという名前のend to endの6Dポーズ推定用の新しい畳み込みニューラルネットワーク（CNN）を紹介します。 PoseCNNの背後にある重要なアイデアは、ポーズ推定タスクをさまざまなコンポーネント(構成要素)に分離することです。これにより、ネットワークはコンポーネント間の依存関係と非依存関係を明示的にモデル化できます。具体的には、PoseCNNは図1に示すように3つの関連タスクを実行します。
 
-![PoseCNN for 6D object pose estimation]()\
+![PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/PoseCNN%20for%206D%20object%20pose%20estimation.png)\
 図1 <br>6Dオブジェクトポーズ推定用の新しいPoseCNNを提案します。ネットワークは、セマンティックラベリング、3D平行移動推定、3D回転回帰の3つのタスクを実行するようにトレーニングされています。
 
 最初に、PoseCNNは入力画像の各ピクセルのオブジェクトラベルを予測します。次に、各ピクセルから中心に向かう単位ベクトルを予測して、オブジェクトの中心の2Dピクセル座標を推定します。セマンティックラベルを使用して、オブジェクトに関連付けられた画像ピクセルは、画像内のオブジェクトの中心位置に投票します。さらに、ネットワークはオブジェクトの中心までの距離も推定します。既知のカメラの組み込みを想定すると、2Dオブジェクトの中心とその距離の推定により、3D変換Tを復元できます。最後に、3D回転Rは、オブジェクトのバウンディングボックス内で抽出された畳み込み特徴をRのクォータニオン表現に回帰することによって推定されます。これから説明するように、RとTを推定するための2D中心投票とそれに続く回転回帰(rotation regression)は、テクスチャ/テクスチャのないオブジェクトに適用でき、オクルージョンに対してもネットワークが投票するようにトレーニングされているため、オクルージョンに対してロバストです。
@@ -44,7 +44,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 ## A. Overview of the Network
 
-![Architecture of PoseCNN for 6D object pose estimation]()\
+![Architecture of PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Architecture%20of%20PoseCNN%20for%206D%20object%20pose%20estimation.png)\
 図2. 6Dオブジェクトポーズ推定のためのPoseCNNのアーキテクチャ。
 
 図2は、6Dオブジェクトポーズ推定のためのネットワークのアーキテクチャを示しています。ネットワークには2つの段階があります。最初のステージは、13の畳み込みレイヤーと4つのmaxpoolingレイヤーで構成され、入力画像から異なる解像度の特徴マップを抽出します。抽出された特徴はネットワークで実行されるすべてのタスクで共有されるため、この段階はネットワークのバックボーンです。第2ステージは、第1ステージで生成された高次元の特徴マップを低次元のタスク固有の機能に埋め込む埋め込みステップで構成されます。次に、ネットワークは、6Dポーズ推定につながる3つの異なるタスク、つまり、セマンティックラベリング、3D平行移動推定、3D回転回帰を実行します。
@@ -56,7 +56,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 ## C. 3D Translation Estimation
 
-![Illustration of the object coordinate system]()\
+![Illustration of the object coordinate system](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Illustration%20of%20the%20object%20coordinate%20system.png)\
 図3. オブジェクト座標系とカメラ座標系の図。<br> 3D平行移動は、オブジェクトの2D中心を特定し、カメラから3D中心距離を推定することによって推定できます。
 
 図3に示すように、3D並進$\bm{T}=(T_x,T_y,T_z )^T$は、カメラ座標系におけるオブジェクトの原点の座標です。 $\bm{T}$を推定する素朴な方法は、画像の特徴を直接$\bm{T}$に回帰することです。ただし、オブジェクトは画像の任意の場所に表示される可能性があるため、このアプローチは一般化できません。また、同じカテゴリの複数のオブジェクトインスタンスを処理することはできません。したがって、画像内の2Dオブジェクトの中心を特定し、カメラからのオブジェクト距離を推定することにより、3D変換を推定することを提案します。見るために、画像への$\bm{T}$の投影が$c=(c_x,c_y )^T$であると仮定します。ネットワークが画像内の$c$を特定し、深さTzを推定できる場合、ピンホールカメラを想定した次の投影方程式に従って$T_x$と$T_y$を復元できます。
@@ -97,7 +97,7 @@ $$
 
 オブジェクトの2Dオブジェクトの中心cを見つけるために、ハフ投票層が設計され、ネットワークに統合されています。ハフ投票層は、ピクセル単位のセマンティックラベリング結果と中心回帰結果を入力として受け取ります。オブジェクトクラスごとに、まず画像内のすべての場所の投票スコアを計算します。投票スコアは、対応する画像の場所がクラス内のオブジェクトの中心である可能性を示します。具体的には、オブジェクトクラスの各ピクセルは、ネットワークから予測された光線に沿った画像の位置に投票を追加します（図4を参照）。オブジェクトクラスのすべてのピクセルを処理した後、すべての画像の場所の投票スコアを取得します。次に、オブジェクトの中心が最大スコアの場所として選択されます。同じオブジェクトクラスの複数のインスタンスが画像に表示される場合は、投票スコアに非最大抑制を適用し、スコアが特定のしきい値よりも大きい場所を選択します。
 
-![Illustration of Hough voting]{}\
+![Illustration of Hough voting](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Illustration%20of%20Hough%20voting.png)\
 図4. オブジェクト中心の位置特定のためのハフ投票のイラスト<br>
 各ピクセルネットワークから予測された光線に沿って画像の位置に投票します。
 
@@ -130,15 +130,15 @@ $$
 
 ## B. Dataset Characterisics
 
-![The subset of 21 YCB Objects selected to appear in our dataset.]{}\
+![The subset of 21 YCB Objects selected to appear in our dataset.](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/The%20subset%20of%2021%20YCB%20Objects%20selected%20to%20appear%20in%20our%20dataset.png)\
 図5. データセットに表示するために選択された21のYCBオブジェクトのサブセット。
 
 私たちが使用したオブジェクトは、図5に示すように、21のYCBオブジェクト[5]のサブセットです。これは、高品質の3Dモデルと奥行きの良い可視性のために選択されました。ビデオは、高速クロッピングモードでAsus Xtion Pro Live RGB-Dカメラを使用して収集されます。このデバイスは、デバイス上で1280x960画像をローカルにキャプチャし、USBを介して中央領域のみを送信することにより、640x480の解像度で30 FPSのRGB画像を提供します。これにより、低いFOVを犠牲にしてRGB画像の有効解像度が高くなりますが、深度センサーの最小範囲を考えると、これは許容できるトレードオフでした。完全なデータセットは133,827個の画像で構成され、LINEMODデータセットよりも2桁大きい。データセットに関連するその他の統計については、表1を参照してください。図6は、注釈付きのグラウンドトゥルースポーズに従って3Dモデルをレンダリングする、データセット内の1つの注釈の例を示しています。アノテーションの精度には、RGBセンサーのローリングシャッター、オブジェクトモデルの不正確さ、RGBセンサーと深度センサー間のわずかな非同期、カメラの固有パラメーターと外部パラメーターの不確実性など、いくつかのエラーの原因があることに注意してください。
 
 表1. STATISTICS OF OUR YCB-VIDEO DATASET\
-![STATISTICS OF OUR YCB-VIDEO DATASET]()
+![STATISTICS OF OUR YCB-VIDEO DATASET](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/STATISTICS%20OF%20OUR%20YCB-VIDEO%20DATASET.png)
 
-![Left an example image from the data]()\
+![Left an example image from the data](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Left%20an%20example%20image%20from%20the%20dataset.png)\
 図6. <br>左：データセットのサンプル画像。<br>
 右：このフレームのポーズアノテーションに従ってレンダリングされた、テクスチャ付き3Dオブジェクトモデル（YCBデータセットに付属）。
 
