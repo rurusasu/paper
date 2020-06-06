@@ -61,11 +61,11 @@ IEEE ROBOTICS AND AUTOMATION LETTERS, VOL. 2, NO. 2, APRIL 2017.
 
 ロボットタスクにディープラーニングを適用するには、（1）データ収集、（2）トレーニング、（3）タスク生成フェーズが必要です。アプローチのフローを図1に示します。「Teleoperation Training」、「Learning Model」、および「GenerateMotions for Tasks」は、それぞれデータ収集、トレーニング、およびタスク生成フェーズに対応しています。
 
-![Process approach](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Process%20approach.png)\
+![Process approach](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Process%20approach.png)\
 画像1. 提案されたアプローチのプロセスは、主に3つのフェーズに分かれています。
 
 ## A. Data Collection Phase
-![Sensory-motor experiece sharing](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Sensory-motor%20experience%20sharing.bmp)
+![Sensory-motor experiece sharing](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Sensory-motor%20experience%20sharing.bmp)
 図2.感覚運動体験の共有：リモートモニタリングまたはヘッドマウントディスプレイを使用して、オペレーターはロボットを直接操作し、同じ感覚を共有して適切な感覚運動体験（データ）を取得できます。これにより、収集された感覚運動データが人間の感覚で動作し、ディープラーニングに効果的であることが期待されます。
 
 データ収集はディープラーニングの重要なステップであり、正確なタイミングのモーションを必要とするタスクには特に重要です。いくつかの深層学習の研究では、ロボットアームがタスクを実行するように誘導するために直接教育を使用しています。ただし、直接教示は、特殊な製品の製造に通常使用される逆駆動可能なロボットにのみ適用できます。このようなロボットは、通常は逆駆動できないロボットのみを装備し、実際のタスク操作のための機能を必要とする工場にとって非常に高価になる可能性があります。現在の研究の目的は、ロボットの制限なしに効果的なデータ収集方法を提案することです。
@@ -77,7 +77,7 @@ IEEE ROBOTICS AND AUTOMATION LETTERS, VOL. 2, NO. 2, APRIL 2017.
 センサー信号や画像データなどの一部のデータは、遠隔操作中に収集できます。これらのシーケンシャルデータは、異なる自律コマンドレベルでロボットから直接収集されます。さらに、図2に示すように、ロボットモーターの角度を含む感覚運動データと、ロボットに取り付けられたカメラでキャプチャされた画像データがトレーニングフェーズで収集されます。
 
 ## B Traning Model Phase
-![Orverview of the model](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Orverview%20of%20the%20model.bmp)\
+![Orverview of the model](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Orverview%20of%20the%20model.bmp)\
 図3. モデルの概要：（a）aDCAEは画像を抽出し、特徴情報を圧縮できます。モデル構造の半分（中間層から出力層）は、抽出された画像の特徴に情報をデコード（再構築）するために使用されます。 （b）TDNNは、ロボットから取得した抽出された画像の特徴とモーションデータのウィンドウサイズのステップで時系列データを学習および生成します。
 
 
@@ -86,7 +86,7 @@ IEEE ROBOTICS AND AUTOMATION LETTERS, VOL. 2, NO. 2, APRIL 2017.
 1) **Deep Convolutional Autoencoder(DCAE):**\
    畳み込みニューラルネットワーク（CNN）は、特に画像認識のための強力な画像処理ツールです。CNNにはスライディングフィルターが含まれています。これは、空間的に局所的な入力パターンに対する強力な応答を活用し、入力画像全体をカバーできる生体細胞に似ています。CNNは、より少ないパラメーターを使用しながら、完全に接続されたニューラルネットワークよりもかなり多くの入力ディメンションを処理できます。これにより、トレーニング時間が大幅に短縮され、画像処理または同様のデータ入力のパフォーマンスが向上します。さらに、深い畳み込み層構造のモデルは、エッジから画像の部分的な部分まで、さまざまなレベルの特徴にデータを抽出できます。この研究では、畳み込み層を使用して、高解像度の画像を小さなサイズの特徴マップに処理できるDCAEを提示しました。ストライドのある畳み込みレイヤーは、特徴を抽出し、情報の次元をダウンサンプリングできます。デコンボリューションレイヤーは、エンコードされたフィーチャマップから画像を再構築するために使用されます。訓練されたDCAEでは、モデル構造の半分（中間層への入力層）を使用して、元の入力画像と比較して、情報を小サイズの画像特徴にエンコード（圧縮）します。これらのエンコードされた画像機能は、入力画像の状態を表し、より少ない次元で高解像度の入力情報を提供できます。バッチ正規化は、学習を最適化し、問題の過剰適合の可能性を減らすために使用されます。DCAE構造を表Iに示します。ネットワークは、出力画像層で入力画像データを再構築するために訓練されます。この研究では、DCAEのトレーニングデータは、ロボットに取り付けられたカメラから取得した連続画像を利用します。各入力画像のターゲットは元の入力データであり、平均二乗誤差（MSE）は、Adam最適化[18]を使用してニューラルネットワークの重みを変更するために使用されます。
 
-   ![Table1 DCAE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Table1%20DCAE.png)
+   ![Table1 DCAE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Table1%20DCAE.png)
 
 
 2) Time-Delay Neural Network:\
@@ -94,7 +94,7 @@ IEEE ROBOTICS AND AUTOMATION LETTERS, VOL. 2, NO. 2, APRIL 2017.
 
    この研究で使用したTDNNの構造を表IIに示します。TDNNは、複数の感覚運動信号入力を使用して逐次情報を学習できます。DCAEおよびロボットの動きから抽出された画像の特徴は、TDNNモデルに適用されます。TDNNの入力は、データセットからのデータの固定ウィンドウサイズステップです。トレーニング中、各入力データのターゲットは元の入力データであり、MSEはAdam最適化を使用して重みを変更するために使用されます。TDNNトレーニングデータセットは、トレーニングデータを経時的にスライドさせて作成されます。
 
-   ![Table2 TDNN](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Table2%20TDNN.png)
+   ![Table2 TDNN](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Table2%20TDNN.png)
 
 ## C. Task Generation Phase
 ![Online generation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Online%20generation.bmp)\
@@ -110,12 +110,12 @@ $$Signal_{exe} = P \times Signal_{out} + (1-P) \times Signal_{pre}$$
 ここで、$P$は組み合わせの入力パーセンテージパラメーター、$Signal_{exe}$は実行コマンド、$Signal_{out}$はアウトソーシング信号、$Signal_{pre}$はTDNNからの予測信号です。最後に、タスクに依存する推定方法を使用して、オンライン生成結果のパフォーマンスを評価します。
 
 # 4. EXPERIMENT
-![Training Object Configurations](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Training%20Object%20Configurations.png)\
+![Training Object Configurations](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Training%20Object%20Configurations.png)\
 画像5. トレーニングオブジェクトの構成。
 
 この研究では、KAWADA RoboticsのNextage Open Robotが実験プラットフォームとして使用されています[20]。このロボットには、バックドライブできない6つのDOFアームが2つと、正確なタスク操作用のカメラが搭載されています。ロボットは草で覆われたテーブルの前に置かれます。人工芝シートは、ロボットが制限された範囲をはるかに超えて動作するときに損傷を防ぐための緩衝領域を提供します。ここで、実験課題とは、実験者がランダムに布を配置する布折り作業です。折りたたみ課題の動作挙動を4つのトレーニングオブジェクトとともに図6に示し、その構成を図5に示します。衣服の配置位置、向き、大きさが異なるため、視覚情報はロボットの作業に大きく貢献します。
 
-![Folding task](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Folding%20task.bmp)\
+![Folding task](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Folding%20task.bmp)\
 図6. 3つの異なる遠隔操作モードを使用して生成された折りたたみタスクの動作。モーションの詳細については、まずグラブポイント（x、yの位置）を決定し、オペレーターが操作コマンド（1〜3）を入力することで自動的にモーションが実行されます。次に、ロボットがグラブモーションを実行すると（モーションを生成してグリッパーを閉じる）、プロセスコントロールは自動的に手動制御モードに切り替わり、3Dマウスを使用してエンドエフェクターの位置を直接制御します（3–5）。最後に、オペレーターが操作を完了すると、「END」コマンドボタンが押され、ロボットがタスクを完了し、ホームポジションに戻ってアクションを完了することができます（5〜6）。シーケンスはホームポジションで終了し、タスク反復能力要件を満たすリミットサイクルアトラクタを作成します。
 
 トレーニングモデルのトレーニングデータとテストデータは、感覚運動データです。これには、ロボットから取得したモーター角度とカメラ画像が含まれます。カメラ画像の解像度は112×112×3ch（37,632次元、RGB）で、モーター角度は12 DOF(degree of freedom：自由度)で、各グリッパー信号はDOF（2 DOF）ごとにあります。データは10 FPSで記録され、各タスクシーケンスには約70秒必要です。トレーニングモデルには、約28,000ステップのデータが使用されます。
@@ -126,10 +126,10 @@ DCAEは学習率 $\alpha = 0.0002$ 、$\beta_1= 0.75$（ADAMパラメーター�
 ## B. Motion Generation
 最初に、トレーニングプロセス中に使用されるトレーニング済みシーケンスと未トレーニングシーケンスを生成します。トレーニングデータの画像への連続入力は、オンライン生成におけるトレーニング済みモデルのパフォーマンスを検証するために利用されます。このプロセスでは、MSE(平均二乗誤差)を使用して予測パフォーマンスを推定します。モーションの平均予測誤差は、トレーニングされた画像データの35シーケンスとテスト画像データの5つのシーケンスをそれぞれ関連付けることにより、各シーケンスのステップあたり0.00501と0.10682です。次に、訓練されたオブジェクトと訓練されていないオブジェクトを使用したオンライン生成によるタスクの成功率を確認します。ここでは、3つのタイプのトレーニングされていない位置データのトレーニングされた布と3つのトレーニングされていない布がテストに使用されています。各布は、ロボットが到達する範囲内で3回ランダムに配置されます（小さな回転でシフトします）。結果を図7に示す。
 
-![Results of online](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Results%20of%20online%20generation.bmp)\
+![Results of online](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Results%20of%20online%20generation.bmp)\
 図7. 訓練されたオブジェクトと訓練されていないオブジェクトを使用したオンライン生成の結果
 
-![Success Rate Evaluated](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Table3%20Success%20Rate%20Evaluated.png)
+![Table3 Success Rate Evaluated](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Table3%20Success%20Rate%20Evaluated.png)
 
 
 タスクのパフォーマンスを評価するために、（a）実行された動作と（b）領域変更率を使用して成功率を定義します。
@@ -138,13 +138,13 @@ a) 実行された動作：この評価では、「掴まれた」動作(Grabbed
 
 b) 面積変化率：この評価では、切り抜かれた画像の領域検出が利用されます。この領域はピクセルを表し、切り抜かれた画像は常に布全体を覆っています。ここでは、開始状態（図6（1）の前）と終了状態（図6（6）の後）の両方でエリアを検出するエリア変更率（ACレート）を定義し、これら2つの状態の差を利用して成功率を評価します。面積変化率の詳細を表IVに示します。異なる面積変化率による成功率を図8に示します。
 
-![AREA CHANGED RATE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Table4%20AREA%20CHANGED%20RATE.png)
+![Table4 AREA CHANGED RATE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Table4%20AREA%20CHANGED%20RATE.png)
 
-![Success rate](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Success%20rate%20relative.bmp)\
+![Success rate relative](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Success%20rate%20relative.bmp)\
 図8. 面積変化率に対する成功率。
 
 ## C. Reiteration Ability Test
-![Reiteration ability test](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/Reiteration%20ability%20test%20experiment.bmp)\
+![Reiteration ability test](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/%E7%94%BB%E5%83%8F/Reiteration%20ability%20test%20experiment.bmp)\
 図9. 人間とロボットの相互作用による反復能力テスト実験。
 
 
@@ -153,7 +153,7 @@ b) 面積変化率：この評価では、切り抜かれた画像の領域検�
 ## D. Online Generation with Untrained Object
 布を折る作業は、本を閉じる作業とよく似ています。したがって、本は訓練されていないオブジェクトでのテストに使用されます。図10に示すように、このタスクは正常に実行されます。
 
-![Blook-closing test](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%94%BB%E5%83%8F/Repeatable%20Folding%20Task%20by%20Humanoid%20Robot/online%20generation%20test.bmp)\
+![Book-closing test]()\
 図10. 訓練されたオブジェクトを使用したオンライン生成テスト：本を閉じるテスト。
 
 # 5. DISCUSSION
