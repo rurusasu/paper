@@ -9,6 +9,7 @@
 
 ## 著者
 Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
+
 ## 掲載
 "PoseCNN: A Convolutional Neural Network for 6D Ob-ject Pose Estimation in Cluttered Scenes.", arXiv preprint arXiv:1711.00199, 2017.
 
