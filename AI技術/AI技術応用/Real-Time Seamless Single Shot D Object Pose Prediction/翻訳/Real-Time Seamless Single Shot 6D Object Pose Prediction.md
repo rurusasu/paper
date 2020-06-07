@@ -5,7 +5,7 @@
 Bugra Tekin, Sudipta N. Sinha, Pascal FuaEPFL
 
 ## 掲載
-In IEEE Conference on Computer Vision and Pattern Recognition(CVPR), 2018.
+"Real-Time Seamless Single Shot 6D Object Pose Prediction," Proc. IEEE Conference on Computer Vision and Pattern Recognition(CVPR), pp. 292-301, 2018.
 
 # Abstract
 複数のステージを必要とせずに、または複数の仮説を検討する必要なく、RGB画像内のオブジェクトを同時に検出し、その6Dポーズを予測するためのシングルショットアプローチを提案します。このタスクに対して最近提案されたシングルショットテクニック[11]とは異なり、近似する6Dポーズのみを予測し、その後、リファインする必要があります。これは、追加の後処理を必要としないほど正確です。その結果、Titan X（Pascal）GPUでは50 fpsとはるかに高速になり、リアルタイム処理により適しています。私たちの方法の重要なコンポーネントは、オブジェクトの3Dバウンディングボックスの投影された頂点の2D画像の位置を直接予測する[28、29]に着想を得た新しいCNNアーキテクチャです。オブジェクトの6Dポーズは、PnPアルゴリズムを使用して推定されます。
