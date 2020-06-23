@@ -1,6 +1,7 @@
 # YOLOv3: An Incremental Improvement
 
 # 備考
+
 [元論文](https://github.com/rurusasu/paper/blob/master/AI%E6%8A%80%E8%A1%93/CNN/YOLOv3/%E5%85%83%E8%AB%96%E6%96%87/YOLOv3_An_Incremental_Improvement.pdf)
 
 ## 著者
