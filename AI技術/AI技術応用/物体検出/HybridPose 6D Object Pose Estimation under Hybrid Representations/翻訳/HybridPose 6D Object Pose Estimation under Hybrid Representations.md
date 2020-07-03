@@ -44,22 +44,62 @@ RGB画像からオブジェクトの6Dポーズを推定することは、3Dビ�
 再重み付け戦略に加えて、いくつかの最近の研究は、ディープラーニングベースのリファイナーを使用して姿勢推定のパフォーマンスを向上させることを提案しています[19、26、44]。 [44、19]は、ポイントマッチング損失を使用して、高精度を実現しています。 [26]輪郭情報を使用して姿勢の更新を予測します。これらの研究とは異なり、私たちのアプローチは、ロバスト目的関数の臨界点と損失面を考慮しており、リカレントネットワークベースのアプローチで使用される固定の事前決定された反復回数を伴いません。
 
 # 3.Approach
-HybridPoseへの入力は、既知の固有パラメーターを持つピンホールカメラによって撮影された、既知のクラスのオブジェクトを含む画像$I$です。オブジェクトのクラスに標準座標系$\sum$（つまり3D点群）があると仮定すると、HybridPoseは$\sum$の下の画像オブジェクトの6Dカメラポーズ$(R_I \in SO, t_I \in \bm{R}^3)$を出力します。ここで、$R_I$は回転です。 $t_I$は翻訳コンポーネントです。
+HybridPoseへの入力は、既知の固有パラメーターを持つピンホールカメラによって撮影された、既知のクラスのオブジェクトを含む画像
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;I" title="I" />
+です。オブジェクトのクラスに標準座標系
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;\sum" title="\sum" />
+（つまり3D点群）があると仮定すると、HybridPoseは
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;\sum" title="\sum" />
+の下の画像オブジェクトの6Dカメラポーズ
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;(R_I&space;\in&space;SO,&space;t_I&space;\in&space;\mathbf{R}^3)" title="(R_I \in SO, t_I \in \mathbf{R}^3)" />
+を出力します。ここで、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;R_I" title="R_I" />
+は回転です。
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;t_I" title="t_I" />
+は翻訳コンポーネントです。
 
 ## 3.1. Approach Overview
 図2に示すように、HybridPoseは予測モジュールとポーズ回帰モジュールで構成されています。
 
-![Fig2](../画像/図2.png)\
+![Fig2](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/HybridPose%206D%20Object%20Pose%20Estimation%20under%20Hybrid%20Representations/%E7%94%BB%E5%83%8F/%E5%9B%B32.png)\
 図2 アプローチの概要。\
 HybridPoseは、中間表現予測ネットワークとポーズ回帰モジュールで構成されています。予測ネットワークは画像を入力として受け取り、予測されたキーポイント、エッジベクトル、対称性の対応を出力します。ポーズ回帰モジュールは、初期化サブモジュールと改良サブモジュールで構成されています。初期化サブモジュールは、予測された中間表現を使用して線形システムを解き、初期ポーズを取得します。リファインメントサブモジュールは、GMロバストノルムを利用して最適化し（9）、最終的なポーズ予測を取得します。
 
 **予測モジュール（セクション3.2）**\
-HybridPoseは、3つの予測ネットワーク$f^{K}_{\theta}、f^{\varepsilon}_{\phi}、$および$f^{S}_{\gamma}$を利用して、キーポイントの集合$K = \{p_k\}$、キーポイント間のエッジの集合$E = \{v_e\}$、および画像ピクセル間の対称性の対応関係の集合$S = \{(q_{s, 1}, q_{s, 2})\}$を推定します。$K、\varepsilon、S$はすべて2Dで表されます。 $\theta、\phi$およびは$\gamma$トレーニング可能なパラメータです。
+HybridPoseは、3つの予測ネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;f^{\kappa}_{\theta},&space;f^{\varepsilon}_{\phi}," title="f^{\kappa}_{\theta}, f^{\varepsilon}_{\phi}," />
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+を利用して、キーポイントの集合
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;\kappa&space;=&space;\{p_k\}" title="\kappa = \{p_k\}" />
+、キーポイント間のエッジの集合
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\epsilon&space;=&space;\{\mathbf{v}_e\}" title="\epsilon = \{\mathbf{v}_e\}" />
+、および画像ピクセル間の対称性の対応関係の集合
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;S&space;=&space;\{(\mathbf{q}_{s,&space;1},&space;\mathbf{q}_{s,&space;2})\}" title="S = \{(\mathbf{q}_{s, 1}, \mathbf{q}_{s, 2})\}" />
+を推定します。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;K,&space;\varepsilon,S" title="K, \varepsilon,S" />
+はすべて2Dで表されます。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\theta,\phi" title="\theta,\phi" />
+およびは
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\gamma" title="\gamma" />
+トレーニング可能なパラメータです。
 
-キーポイントネットワーク$f^{K}_{\theta}$は、既製の予測ネットワーク[34]を採用しています。他の2つの予測ネットワーク$f^{\varepsilon}_{\phi}$と$f^{S}_{\gamma}$は、キーポイント予測が不正確な場合に姿勢回帰を安定させるために導入されています。具体的には、$f^{\varepsilon}_{\phi}$はあらかじめ定義されたキーポイントのグラフに沿ってエッジベクトルを予測し，入力画像中にキーポイントが乱雑に存在する場合にポーズ回帰を安定化させます。$f^{S}_{\gamma}$は、基になる（部分的な）反射対称を反映する対称対応を予測します。この対称表現の主な利点は、対称対応の数が多いことです。つまり、オブジェクト上のすべてのイメージピクセルに対称対応があります。その結果、外れ値の比率が大きくても、対称性の対応は、基礎となるポーズを正則化するために反射対称面を推定するための十分な制約を提供します。さらに、対称性の対応には、基になるオブジェクトの内部に、キーポイントやエッジベクトルよりも多くの機能が組み込まれています。
+キーポイントネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\kappa}_{\theta}" title="f^{\kappa}_{\theta}" />
+は、既製の予測ネットワーク[34]を採用しています。他の2つの予測ネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\varepsilon}_{\phi}" title="f^{\varepsilon}_{\phi}" />
+と
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+は、キーポイント予測が不正確な場合に姿勢回帰を安定させるために導入されています。具体的には、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\varepsilon}_{\phi}" title="f^{\varepsilon}_{\phi}" />
+はあらかじめ定義されたキーポイントのグラフに沿ってエッジベクトルを予測し，入力画像中にキーポイントが乱雑に存在する場合にポーズ回帰を安定化させます。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+は、基になる（部分的な）反射対称を反映する対称対応を予測します。この対称表現の主な利点は、対称対応の数が多いことです。つまり、オブジェクト上のすべてのイメージピクセルに対称対応があります。その結果、外れ値の比率が大きくても、対称性の対応は、基礎となるポーズを正則化するために反射対称面を推定するための十分な制約を提供します。さらに、対称性の対応には、基になるオブジェクトの内部に、キーポイントやエッジベクトルよりも多くの機能が組み込まれています。
 
 **ポーズ回帰モジュール（セクション3.3）**\
-HybridPoseの2番目のモジュールは、3つの予測ネットワークの出力に適合するようにオブジェクトポーズ$(R_I, t_I)$を最適化します。このモジュールは、トレーニング可能な初期化サブモジュールとトレーニング可能な改良サブモジュールを組み合わせたものです。特に、初期化サブモジュールはSVDを実行して、グローバルアフィンポーズ空間の初期ポーズを解決します。リファインメントサブモジュールは、ロバストノルムを利用して、予測された要素の外れ値をフィルタリングし、正確なオブジェクトポーズを推定します。
+HybridPoseの2番目のモジュールは、3つの予測ネットワークの出力に適合するようにオブジェクトポーズ
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(R_I,&space;t_I)" title="(R_I, t_I)" />
+を最適化します。このモジュールは、トレーニング可能な初期化サブモジュールとトレーニング可能な改良サブモジュールを組み合わせたものです。特に、初期化サブモジュールはSVDを実行して、グローバルアフィンポーズ空間の初期ポーズを解決します。リファインメントサブモジュールは、ロバストノルムを利用して、予測された要素の外れ値をフィルタリングし、正確なオブジェクトポーズを推定します。
 
 **HybridPoseのトレーニング（セクション3.4）**\
 データセットをトレーニングセットと検証セットに分割することで、HybridPoseをトレーニングします。トレーニングセットを使用して予測モジュールを学習し、検証セットを使用してポーズ回帰モジュールのハイパーパラメーターを学習します。 1つのトレーニングセットを使用して、HybridPoseをエンドツーエンドでトレーニングしてみました。ただし、トレーニングセットとテストセットの予測分布の違いは、最適化されていない汎化パフォーマンスにつながります。
@@ -68,12 +108,26 @@ HybridPoseの2番目のモジュールは、3つの予測ネットワークの�
 このセクションでは、HybridPoseで使用される3つの中間表現について説明します。
 
 **キーポイント**\
-最初の中間表現は、ポーズ推定に広く使用されているキーポイントで構成されています。入力画像$I$が与えられると、ニューラルネットワーク$f^{K}_{\theta} (I) \in R^{2 \times |K|}$をトレーニングして、事前に定義された$|K|$キーポイントの集合の2D座標を予測します。私たちの実験では、HybridPoseにPVNet [34]と呼ばれる既製のアーキテクチャが組み込まれています。これは、投票スキームを使用して可視と不可視の両方のキーポイントを予測する、最先端のキーポイントベースの姿勢推定器です。
+最初の中間表現は、ポーズ推定に広く使用されているキーポイントで構成されています。入力画像
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;I" title="I" />
+が与えられると、ニューラルネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\kappa}_{\theta}&space;(I)&space;\in&space;R^{2&space;\times&space;|\kappa|}" title="f^{\kappa}_{\theta} (I) \in R^{2 \times |\kappa|}" />
+をトレーニングして、事前に定義された
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\kappa|" title="|\kappa|" />
+キーポイントの集合の2D座標を予測します。私たちの実験では、HybridPoseにPVNet [34]と呼ばれる既製のアーキテクチャが組み込まれています。これは、投票スキームを使用して可視と不可視の両方のキーポイントを予測する、最先端のキーポイントベースの姿勢推定器です。
 
 予測されたキーポイントの外れ値の他に、キーポイントベースの技術のもう一つの限界は、隣接するキーポイント間の差（方向と距離）がオブジェクトポーズの重要な情報を特徴付ける場合、不正確なキーポイント予測が大きなポーズエラーを引き起こすことです。
 
 **エッジ**\
-第２の中間表現は、予め定義されたグラフに沿ったエッジベクトルで構成され、キーポイントの各ペア間の変位を明確にモデル化する。図2に示すように、HybridPoseは単純なネットワーク$f^{\varepsilon}_{\phi} (I) \in R^{2 \times |\varepsilon|}$を使用して、2D画像平面のエッジベクトルを予測します。ここで$|\varepsilon|$は、定義済みグラフのエッジの数を表します。私たちの実験では、$\varepsilon$は完全に接続されたグラフです。つまり、$|\varepsilon| = \frac{|K| \cdot (|K|-1)}{2}$です。
+第２の中間表現は、予め定義されたグラフに沿ったエッジベクトルで構成され、キーポイントの各ペア間の変位を明確にモデル化する。図2に示すように、HybridPoseは単純なネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\varepsilon}_{\phi}&space;(I)&space;\in&space;R^{2&space;\times&space;|\varepsilon|}" title="f^{\varepsilon}_{\phi} (I) \in R^{2 \times |\varepsilon|}" />
+を使用して、2D画像平面のエッジベクトルを予測します。ここで
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\varepsilon|" title="|\varepsilon|" />
+は、定義済みグラフのエッジの数を表します。私たちの実験では、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\varepsilon|" title="|\varepsilon|" />
+は完全に接続されたグラフです。つまり、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\varepsilon|&space;=&space;\frac{|K|&space;\cdot&space;(|K|-1)}{2}" title="|\varepsilon| = \frac{|K| \cdot (|K|-1)}{2}" />
+です。
 
 **対称性の対応**\
 第３の中間表現は、基礎となる反射対称性を反映する予測されたピクセル単位の対称性の対応関係で構成されます。我々の実験では、HybridPoseはFlowNet 2.0 [15]のネットワークアーキテクチャを拡張したものであり、密なピクセル単位のフローとPVNetによって予測されたセマンティックマスクを組み合わせたものです。結果として生じる対称性の対応関係は、マスク領域内の予測されたピクセル単位のフローによって与えられます。最初の2つの表現と比較すると、対称対応点の数が大幅に多いため、オクルードされたオブジェクトに対しても豊富な制約を与えることができます。しかし、対称対応関係は、オブジェクトポーズの回転成分の2つの自由度のみを制約します（c.f. [24]）。よって、対称の対応を他の中間表現と組み合わせる必要があります。
@@ -81,64 +135,201 @@ HybridPoseの2番目のモジュールは、3つの予測ネットワークの�
 3Dモデルは複数の反射対称面を持つことがあります。これらのモデルに対して、最も顕著な反射対称面、すなわち、元の3Dモデル上で最も多くの対称対応がある面を基準に、対称対応を予測するためにHybridPoseを訓練します。
 
 **ネットワーク設計のまとめ**\
-私たちの実験では$f^{K}_{\theta} (I)$、$f^{\varepsilon}_{\phi} (I)$、および$f^{S}_{\gamma}$はすべてResNet[11]に基づいており、実装の詳細はセクション4.1で説明します。トレーニング可能なパラメーターは、最後のたたみ込み層を除くすべてで共有されます。したがって、エッジ予測ネットワーク$f^{\varepsilon}_{\phi} (I)$および対称性予測ネットワーク$f^{S}_{\gamma}$を導入するオーバーヘッドは重要ではありません。
+私たちの実験では
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\kappa}_{\theta}&space;(I)$,&space;$f^{\varepsilon}_{\phi}&space;(I)" title="f^{\kappa}_{\theta} (I)$, $f^{\varepsilon}_{\phi} (I)" />
+、および
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+はすべてResNet[11]に基づいており、実装の詳細はセクション4.1で説明します。トレーニング可能なパラメーターは、最後のたたみ込み層を除くすべてで共有されます。したがって、エッジ予測ネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{\varepsilon}_{\phi}&space;(I)" title="f^{\varepsilon}_{\phi} (I)" />
+および対称性予測ネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+を導入するオーバーヘッドは重要ではありません。
 
 ## 3.3. Pose Regression
-HybridPoseの2番目のモジュールは、予測された中間表現$\{K; \varepsilon; S\}$を入力として取り、入力画像$I$の6次元物体ポーズ$(R_I \in SO(3), t_I \in \bm{R}3)$を出力する。回帰アプローチ[35]と同様に、HybridPoseは初期化サブモジュールと洗練サブモジュールを組み合わせています。両方のサブモジュールはすべての予測された要素を活用します。洗練サブモジュールはさらに、堅牢な関数を活用して、予測された要素の外れ値をモデル化します。
+HybridPoseの2番目のモジュールは、予測された中間表現
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\{\kappa,&space;\varepsilon,&space;S\}" title="\{\kappa, \varepsilon, S\}" />
+を入力として取り、入力画像
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;I" title="I" />
+の6次元物体ポーズ
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(R_I&space;\in&space;SO(3),&space;t_I&space;\in&space;\mathbf{R}3)" title="(R_I \in SO(3), t_I \in \mathbf{R}3)" />
+を出力する。回帰アプローチ[35]と同様に、HybridPoseは初期化サブモジュールと洗練サブモジュールを組み合わせています。両方のサブモジュールはすべての予測された要素を活用します。洗練サブモジュールはさらに、堅牢な関数を活用して、予測された要素の外れ値をモデル化します。
 
 **初期化サブモジュール**\
-このサブモジュールは、$(R_I, t_I)$と予測された要素間の制約を利用し、アフィン空間で$(R_I,t_I)$を解決します。これは、交互最適化方法でSE（3）に投影されます。このために、予測される要素のタイプごとに次の差分ベクトルを導入します。
-$$
-\bar{r}_{R,t}^\kappa (p_k) := \hat{p_k} \times \left(R\bar{p}_k + t \right) \\
-\bar{r}_{R,t}^\epsilon (v_e, p_{e_s}) := \hat{v}_e \times \left(R\bar{p_{e_t}} + t \right) + \hat{p_{e_s}} \times \left(R\bar{v_e} \right) \\
-\bar{r}_{R,t}^S (q_{s,1}, q_{s,2}) := \left(\hat{q_{s,1}} \times q_{s,2} \right)^T R\bar{n}r
-$$
+このサブモジュールは、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(R_I,&space;t_I)" title="(R_I, t_I)" />
+と予測された要素間の制約を利用し、アフィン空間で
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(R_I,t_I)" title="(R_I,t_I)" />
+を解決します。これは、交互最適化方法でSE(3)に投影されます。このために、予測される要素のタイプごとに次の差分ベクトルを導入します。
 
-ここで、$e_s$と$e_t$はエッジ$e$の終了頂点であり、$\bar{v}_e =\bar{p}_{e_t} \in \bm{R}^3$、$\bar{n}_r \in \bm{R}^3$は正則系の反射対称平面の法線です。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\bar{\mathbf{r}}_{R,\mathbf{t}}^\kappa&space;(\mathbf{p}_\kappa)&space;:=&space;\hat{\mathbf{p}_\kappa}&space;\times&space;\left(R\bar{\mathbf{p}}_\kappa&space;&plus;&space;\mathbf{t}&space;\right)&space;\\&space;\bar{\mathbf{r}}_{R,\mathbf{t}}^\epsilon&space;(v_e,&space;\mathbf{p}_{e_s})&space;:=&space;\hat{\mathbf{v}}_e&space;\times&space;\left(R\bar{\mathbf{p}_{e_t}}&space;&plus;&space;\mathbf{t}&space;\right)&space;&plus;&space;\hat{\mathbf{p}_{e_s}}&space;\times&space;\left(R\bar{\mathbf{v}_e}&space;\right)&space;\\&space;\bar{r}_{R,\mathbf{t}}^S&space;(\mathbf{q}_{s,1},&space;\mathbf{q}_{s,2})&space;:=&space;\left(\hat{q_{s,1}}&space;\times&space;q_{s,2}&space;\right)^T&space;\mathbf{R}\bar{\mathbf{n}}_r" title="\bar{\mathbf{r}}_{R,\mathbf{t}}^\kappa (\mathbf{p}_\kappa) := \hat{\mathbf{p}_\kappa} \times \left(R\bar{\mathbf{p}}_\kappa + \mathbf{t} \right) \\ \bar{\mathbf{r}}_{R,\mathbf{t}}^\epsilon (v_e, \mathbf{p}_{e_s}) := \hat{\mathbf{v}}_e \times \left(R\bar{\mathbf{p}_{e_t}} + \mathbf{t} \right) + \hat{\mathbf{p}_{e_s}} \times \left(R\bar{\mathbf{v}_e} \right) \\ \bar{r}_{R,\mathbf{t}}^S (\mathbf{q}_{s,1}, \mathbf{q}_{s,2}) := \left(\hat{q_{s,1}} \times q_{s,2} \right)^T \mathbf{R}\bar{\mathbf{n}}_r" />
 
-HybridPoseはEPnP [18]のフレームワークを変更して、初期ポーズを生成します。予測された要素からのこれら3つの制約を組み合わせることにより、$Ax = 0$の線形システムを生成します。ここで、$A$は行列で、その次元は$(3|\kappa| + 3|\epsilon| + |S|) \times 12$です。$x = [r^T_1, r^T_2, r^T_3, t^T]^T_{12\times1}$は、回転および並進パラメータを含むベクトルです。キーポイント、dgeベクトル、および対称対応の間の相対的な重要性をモデル化するために、ハイパーパラメーター$\alpha_E$および$\alpha_S$によってそれぞれ(2)および(3)を再スケーリングし、$A$を生成しました。
+ここで、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;e_s" title="e_s" />
+と
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;e_t" title="e_t" />
+はエッジ
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;e" title="e" />
+の終了頂点であり、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{v}_e&space;=\mathbf{p}_{e_t}&space;\in&space;\mathbf{R}^3,&space;\mathbf{n}_r&space;\in&space;\mathbf{R}^3" title="\mathbf{v}_e =\mathbf{p}_{e_t} \in \mathbf{R}^3, \mathbf{n}_r \in \mathbf{R}^3" />
+は正則系の反射対称平面の法線です。
+
+HybridPoseはEPnP [18]のフレームワークを変更して、初期ポーズを生成します。予測された要素からのこれら3つの制約を組み合わせることにより、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;Ax&space;=&space;0" title="Ax = 0" />
+の線形システムを生成します。ここで、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;A" title="A" />
+は行列で、その次元は
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(3|\kappa|&space;&plus;&space;3|\varepsilon|&space;&plus;&space;|S|)&space;\times&space;12" title="(3|\kappa| + 3|\varepsilon| + |S|) \times 12" />
+です。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{x}&space;=&space;[\mathbf{r}^T_1,&space;\mathbf{r}^T_2,&space;\mathbf{r}^T_3,&space;\mathbf{t}^T]^T_{12\times1}" title="\mathbf{x} = [\mathbf{r}^T_1, \mathbf{r}^T_2, \mathbf{r}^T_3, \mathbf{t}^T]^T_{12\times1}" />
+は、回転および並進パラメータを含むベクトルです。キーポイント、dgeベクトル、および対称対応の間の相対的な重要性をモデル化するために、ハイパーパラメーター
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\alpha_E" title="\alpha_E" />
+および
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\alpha_S" title="\alpha_S" />
+によってそれぞれ(2)および(3)を再スケーリングし、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;A" title="A" />
+を生成しました。
 
 EPnP[18]に従って、xを次のように計算します
-$$
-\bm{x} = \sum_{i=1}^N \gamma_i \bm{v}_i
-$$
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{x}&space;=&space;\sum_{i=1}^N&space;\gamma_i&space;\mathbf{v}_i" title="\mathbf{x} = \sum_{i=1}^N \gamma_i \mathbf{v}_i" />
 
-ここで、$v_i$は$A$の$i$番目に小さい右特異ベクトルです。理想的には、予測された要素にノイズがない場合、$\bm{x} = \bm{v}_1$を持つ$N = 1$が最適解です。ただし、この手法は、ノイズの多い予測値が与えられた場合には、十分に機能しません。EPnP[18]と同様に、$N = 4$を選択します。最適な$\bm{x}$を計算するために、次の目的関数を用いて、交互最適化手順で潜在変数$\gamma_{i}$と回転行列$R$を最適化します。
+ここで、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{v}_i" title="\mathbf{v}_i" />
+は
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;A" title="A" />
+の
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;i" title="i" />
+番目に小さい右特異ベクトルです。理想的には、予測された要素にノイズがない場合、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{x}&space;=&space;\mathbf{v}_1" title="\mathbf{x} = \mathbf{v}_1" />
+を持つ
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;N&space;=&space;1" title="N = 1" />
+が最適解です。ただし、この手法は、ノイズの多い予測値が与えられた場合には、十分に機能しません。EPnP[18]と同様に、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;N&space;=&space;4" title="N = 4" />
+を選択します。最適な
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{x}" title="\mathbf{x}" />
+を計算するために、次の目的関数を用いて、交互最適化手順で潜在変数
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\gamma_{i}" title="\gamma_{i}" />
+と回転行列$R$を最適化します。
 
-$$
-\min_{R \in \bm{R}^{3 \times 3}, \gamma_i} ||\sum_{i=1}^4 \gamma_iR_i - R||_F^2
-$$
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\min_{R&space;\in&space;\mathbf{R}^{3&space;\times&space;3},&space;\gamma_i}&space;||\sum_{i=1}^4&space;\gamma_iR_i&space;-&space;R||_F^2" title="\min_{R \in \mathbf{R}^{3 \times 3}, \gamma_i} ||\sum_{i=1}^4 \gamma_iR_i - R||_F^2" />
 
-ここで、$R_i \in R^{3\times3}$は$\bm{v}_i$の最初の9要素から再形成されます。最適な$\gamma_i$を取得した後、結果のアフィン変換$\sum_{i = 1}^4 \gamma_iR_i$を剛体変換に射影します。スペースの制約のため、詳細はサポートに委ねています。
+ここで、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;R_i&space;\in&space;R^{3\times3}" title="R_i \in R^{3\times3}" />
+は
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\mathbf{v}_i" title="\mathbf{v}_i" />
+の最初の9要素から再形成されます。最適な
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\gamma_i" title="\gamma_i" />
+を取得した後、結果のアフィン変換
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\sum_{i&space;=&space;1}^4&space;\gamma_iR_i" title="\sum_{i = 1}^4 \gamma_iR_i" />
+を剛体変換に射影します。スペースの制約のため、詳細はサポートに委ねています。
 
 **細分割サブモジュール**。
 （5）はハイブリッド中間表現を組み合わせ、適切な初期化を可能ですが、予測された要素の外れ値を直接モデル化しているわけではありません。また、別の制限として（1）と（2）では、キーポイントベースのポーズ推定で有効であることが知られている（キーポイントとエッジに関する）射影誤差を最小化しません（c.f. [35]）．
 
-初期オブジェクトポー$(R^{init}, t^{init})$を利用することで得られる refinementサブモジュールは、オブジェクトポーズをrefineするための局所最適化を行います。ここでは，射影誤差$\forall k$, $e, $s$を含む2つの差分ベクトルを導入する．
+初期オブジェクトポー
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;(R^{init},&space;t^{init})" title="(R^{init}, t^{init})" />
+を利用することで得られる refinementサブモジュールは、オブジェクトポーズをrefineするための局所最適化を行います。ここでは，射影誤差
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;\forall&space;k,&space;e,&space;s" title="\forall k, e, s" />
+を含む2つの差分ベクトルを導入する．
 
-$$
-\bar{r}_{R,t}^\kappa (p_k) := p_{R,t}\left(\bar{\bm{p}}_k\right) -\bm{p}_k \\
-\bar{r}_{R,t}^\kappa (p_k) := p_{R,t}\left(\bar{\bm{p}}_{e_t}\right) - p_{R,t}\left(\bar{\bm{p}}_{e_s}\right) -\bm{v}_e
-$$
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\bar{r}_{R,t}^\kappa(p_k)&space;:=&space;p_{R,t}\left(\bar{\mathbf{p}}_k\right)&space;-\mathbf{p}_k&space;\\&space;\bar{r}_{R,t}^\kappa(p_k)&space;:=&space;p_{R,t}\left(\bar{\mathbf{p}}_{e_t}\right)&space;-&space;p_{R,t}\left(\bar{\mathbf{p}}_{e_s}\right)&space;-\mathbf{v}_e" title="\bar{r}_{R,t}^\kappa(p_k) := p_{R,t}\left(\bar{\mathbf{p}}_k\right) -\mathbf{p}_k \\ \bar{r}_{R,t}^\kappa(p_k) := p_{R,t}\left(\bar{\mathbf{p}}_{e_t}\right) - p_{R,t}\left(\bar{\mathbf{p}}_{e_s}\right) -\mathbf{v}_e" />
 
-ここで$P_{R,t}$:$\bm {R}^3 \rightarrow \bm{R}^2$は、現在のポーズ$(R, \bm{t})$から誘導された投影演算子です。
+ここで
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;P_{R,t}:\mathbf{R}^3&space;\rightarrow&space;\mathbf{R}^2" title="P_{R,t}:\mathbf{R}^3 \rightarrow \mathbf{R}^2" />
+は、現在のポーズ
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;(R,&space;\mathbf{t})" title="(R, \mathbf{t})" />
+から誘導された投影演算子です。
 
 予測された要素の外れ値をプルーニングする(取り除く)ために、一般化されたGerman-Mcclure（またはGM）ロバスト関数を検討します。
-$$
-\rho(x, \beta) := \frac{\beta_1^2}{(\beta_2^2 + x^2)}
-$$
+
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\rho(x,&space;\beta)&space;:=&space;\frac{\beta_1^2}{(\beta_2^2&space;&plus;&space;x^2)}" title="\rho(x, \beta) := \frac{\beta_1^2}{(\beta_2^2 + x^2)}" />
+
 この設定により、HybridPoseは、ポーズの微調整に関する次の非線形最適化問題を解決します。
 
-$$
-\min_{R, t} = \sum_{k=1}^{|\kappa|}\rho \left( ||\bm{r}_{R, t}^\kappa (\bm{p}_k)||, \beta_\kappa || \right) || \bm{r}_{R, t}^\kappa (\bm{p}_k) ||_{\sum_k}^2 \\ + \frac{|\kappa|}{|\epsilon|}\sum_{e=1}^{|\epsilon|}\rho \left( ||\bm{r}_{R, t}^\epsilon (\bm{v}_e)||, \beta_\epsilon || \right) || \bm{r}_{R, t}^\epsilon (\bm{p}_k) ||_{\sum_e}^2 \\ + \frac{|\kappa|}{|S|}\sum_{s=1}^{|S|}\rho \left(\bm{r}_{R, t}^S (\bm{q}_{s, 1}, \bm{q}_{s, 2}), \beta_S \right)
-$$
 
-ここで、$\beta_K$、$\beta_E$、および$\beta_S$は、キーポイント、エッジ、および対称対応の個別のハイパーパラメーターです。 $\sum_k$および$\sum_e$は、キーポイントおよびエッジ予測に付加された共分散情報を示します。 $||\bm{x}||_A = (\bm{x}^T A\bm{x})^{\frac{1}{2}}$。予測の共分散が利用できない場合は、$\sum_k = \sum_e = I_2$に設定します。上記の最適化問題は、$R^{init}$と$t^{init}$から始まるガウス・ニュートン法によって解きます。
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\min_{R,&space;t}&space;=&space;\sum_{k=1}^{|\kappa|}\rho&space;\left(&space;||\mathbf{r}_{R,&space;t}^\kappa&space;(\mathbf{p}_\kappa)||,&space;\beta_\kappa&space;||&space;\right)&space;||&space;\mathbf{r}_{R,&space;t}^\kappa&space;(\mathbf{p}_\kappa)&space;||_{\sum_\kappa}^2&space;\\&space;&plus;&space;\frac{|\kappa|}{|\epsilon|}\sum_{e=1}^{|\epsilon|}\rho&space;\left(&space;||\mathbf{r}_{R,&space;t}^\epsilon&space;(\mathbf{v}_e)||,&space;\beta_\epsilon&space;||&space;\right)&space;||&space;\mathbf{r}_{R,&space;t}^\epsilon&space;(\mathbf{v}_e)&space;||_{\sum_e}^2&space;\\&space;&plus;&space;\frac{|\kappa|}{|S|}\sum_{s=1}^{|S|}\rho&space;\left(\mathbf{r}_{R,&space;t}^S&space;(\mathbf{q}_{s,&space;1},&space;\mathbf{q}_{s,&space;2}),&space;\beta_S&space;\right)" title="\min_{R, t} = \sum_{k=1}^{|\kappa|}\rho \left( ||\mathbf{r}_{R, t}^\kappa (\mathbf{p}_\kappa)||, \beta_\kappa || \right) || \mathbf{r}_{R, t}^\kappa (\mathbf{p}_\kappa) ||_{\sum_\kappa}^2 \\ + \frac{|\kappa|}{|\epsilon|}\sum_{e=1}^{|\epsilon|}\rho \left( ||\mathbf{r}_{R, t}^\epsilon (\mathbf{v}_e)||, \beta_\epsilon || \right) || \mathbf{r}_{R, t}^\epsilon (\mathbf{v}_e) ||_{\sum_e}^2 \\ + \frac{|\kappa|}{|S|}\sum_{s=1}^{|S|}\rho \left(\mathbf{r}_{R, t}^S (\mathbf{q}_{s, 1}, \mathbf{q}_{s, 2}), \beta_S \right)" />
+
+
+ここで、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\beta_K,&space;\beta_E" title="\beta_K, \beta_E" />、
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\beta_S" title="\beta_S" />
+は、キーポイント、エッジ、および対称対応の個別のハイパーパラメーターです。 
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\sum_{\kappa}" title="\sum_{\kappa}" />
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\sum_e" title="\sum_e" />
+は、キーポイントおよびエッジ予測に付加された共分散情報を示します。 
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;||\mathbf{x}||_A&space;=&space;(\mathbf{x}^T&space;A\mathbf{x})^{\frac{1}{2}}" title="||\mathbf{x}||_A = (\mathbf{x}^T A\mathbf{x})^{\frac{1}{2}}" />
+。予測の共分散が利用できない場合は、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\sum_{\kappa}&space;=&space;\sum_e&space;=&space;I_2" title="\sum_{\kappa} = \sum_e = I_2" />
+に設定します。上記の最適化問題は、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;R^{init}" title="R^{init}" />
+と
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;t^{init}" title="t^{init}" />
+から始まるガウス・ニュートン法によって解きます。
 
 補足資料では、(9)の安定性解析を行い、(9)の最適解が予測表現のノイズに対してどのように変化するかを示しています。また、3つの中間表現すべての中での協調性の強さも示す。キーポイントが$t$の精度に大きく寄与する一方で、エッジベクトルと対称性の対応関係は$R$の回帰を安定化させることができます。
 
 ## 3.4. HybridPose Training
-このセクションでは、ラベル付きデータセット$T = {I, (\kappa_I^{gt}, \epsilon_I^{gt}, S_I^{gt}, (R_I^{gt}, t_I^{gt}))}$を使用して、HybridPoseの予測ネットワークとハイパーパラメーターをトレーニングする方法について説明します。ここで、$I$、$K_I^{gt}$、$E_I^{gt}$、$S_I^{gt}$、および$(R_I^{gt}, t_I^{gt})$を使用して、RGBイメージ、ラベル付きキーポイント、エッジ、対称対応、グラウンドトゥルースオブジェクトのポーズをそれぞれ示します。一般的な方法は、モデル全体をエンドツーエンドでトレーニングすることです。たとえば、リカレントネットワークを使用して最適化手順をモデル化し、オブジェクトポーズ出力と中間表現に損失項を導入します。しかし、この方法は最適ではないことがわかりました。学習セットの予測要素の分布は、テストセットの分布とは異なります。予測された要素の監視と最終的なオブジェクトポーズの間のトレードオフを慎重に調整しても、トレーニングデータに適合するポーズ回帰モデルは、テストデータでは一般化しません。
+このセクションでは、ラベル付きデータセット
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T&space;=&space;{I,&space;(\kappa_I^{gt},&space;\epsilon_I^{gt},&space;S_I^{gt},&space;(R_I^{gt},&space;t_I^{gt}))}" title="T = {I, (\kappa_I^{gt}, \epsilon_I^{gt}, S_I^{gt}, (R_I^{gt}, t_I^{gt}))}" />
+を使用して、HybridPoseの予測ネットワークとハイパーパラメーターをトレーニングする方法について説明します。ここで、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;I,&space;\kappa_I^{gt},&space;\epsilon_I^{gt},&space;S_I^{gt}" title="I, \kappa_I^{gt}, \epsilon_I^{gt}, S_I^{gt}" />、
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;(R_I^{gt},&space;t_I^{gt})" title="(R_I^{gt}, t_I^{gt})" />
+を使用して、RGBイメージ、ラベル付きキーポイント、エッジ、対称対応、グラウンドトゥルースオブジェクトのポーズをそれぞれ示します。一般的な方法は、モデル全体をエンドツーエンドでトレーニングすることです。たとえば、リカレントネットワークを使用して最適化手順をモデル化し、オブジェクトポーズ出力と中間表現に損失項を導入します。しかし、この方法は最適ではないことがわかりました。学習セットの予測要素の分布は、テストセットの分布とは異なります。予測された要素の監視と最終的なオブジェクトポーズの間のトレードオフを慎重に調整しても、トレーニングデータに適合するポーズ回帰モデルは、テストデータでは一般化しません。
 
-このアプローチでは、ラベル付きセット$T=T_{train} \cup T_{val}$をランダムにトレーニングセットと検証セットに分割します。 $T_{train}$は予測ネットワークをトレーニングするために使用され、$T_{val}$はポーズ回帰モデルのハイパーパラメーターをトレーニングします。予測ネットワークの実装とトレーニングの詳細は、セクション4.1に示されています。以下では、$T_{val}$を使用してハイパーパラメータをトレーニングすることに焦点を当てます。
+このアプローチでは、ラベル付きセット
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T=T_{train}&space;\cup&space;T_{val}" title="T=T_{train} \cup T_{val}" />
+をランダムにトレーニングセットと検証セットに分割します。
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T_{train}" title="T_{train}" />
+は予測ネットワークをトレーニングするために使用され、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T_{val}" title="T_{val}" />
+はポーズ回帰モデルのハイパーパラメーターをトレーニングします。予測ネットワークの実装とトレーニングの詳細は、セクション4.1に示されています。以下では、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T_{val}" title="T_{val}" />
+を使用してハイパーパラメータをトレーニングすることに焦点を当てます。
 
+**初期化サブモジュール**。
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;R^{init}_I" title="R^{init}_I" />
+と
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;t^{init}_I" title="t^{init}_I" />
+を初期化サブモジュールの出力とします。次の最適化問題を解くことにより、最適なハイパーパラメータ
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\alpha_E" title="\alpha_E" />
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\alpha_S" title="\alpha_S" />
+を取得します。
+
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\min_{\alpha_E,&space;\alpha_S}&space;\sum_{I&space;\in&space;T_{pose}}&space;(||R_I^{init}&space;-&space;R_I^{gt}||_{F}^2&space;&plus;&space;||t_I^{init}&space;-&space;t_I^{gt}||^2)" title="\min_{\alpha_E, \alpha_S} \sum_{I \in T_{pose}} (||R_I^{init} - R_I^{gt}||_{F}^2 + ||t_I^{init} - t_I^{gt}||^2)" />
+
+ハイパーパラメータの数はかなり少なく、ポーズの初期化ステップでは明示的な表現ができないため，有限差分法を用いて数値勾配つまり、勾配を周囲のハイパーパラメータのサンプルに当てはめることによって現在のソリューションを計算する。次に、最適化のためにバックトラックライン検索を適用します。
+
+**細分割サブモジュール**。
+このサブモジュールのハイパーパラメタを
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\beta&space;=&space;{\{\beta_\kappa,&space;\beta_\epsilon&space;\beta_S\}}" title="\beta = {\{\beta_\kappa, \beta_\epsilon \beta_S\}}" />
+とする。各インスタンス
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;(I,&space;(\kappa_I^{gt},&space;\epsilon_I^{gt},&space;S_I^gt,&space;(R_I^{gt},&space;t_I^{gt})))&space;\in&space;T_{val}" title="(I, (\kappa_I^{gt}, \epsilon_I^{gt}, S_I^gt, (R_I^{gt}, t_I^{gt}))) \in T_{val}" />
+について、(9) の目的関数を
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;f_I(\mathbf{c},&space;\beta)" title="f_I(\mathbf{c}, \beta)" />
+とする。ここで、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\mathbf{c}&space;=&space;(\mathbf{c}^T,&space;\bar{\mathbf{c}}^T)^T&space;\in&space;\mathbf{R}^6" title="\mathbf{c} = (\mathbf{c}^T, \bar{\mathbf{c}}^T)^T \in \mathbf{R}^6" />
+は
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;R_I" title="R_I" />
+と
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;t_I" title="t_I" />
+の局所的なパラメータ化であり、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;R_I&space;=&space;exp(\mathbf{c}\times)R_I^{gt},&space;\mathbf{t}_I&space;=&space;\mathbf{t}_I^{gt}&space;&plus;&space;\bar{\mathbf{c}}" title="R_I = exp(\mathbf{c}\times)R_I^{gt}, \mathbf{t}_I = \mathbf{t}_I^{gt} + \bar{\mathbf{c}}" />
+を表す。
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\mathbf{c}" title="\mathbf{c}" />
+はSE(3)における現在の推定ポーズと基底真実ポーズの違いをコード化したものである。
+
+改良モジュールは制約のない最適化問題を解いており、その最適解は臨界点と臨界点周辺の損失面によって決定されます。2 つの単純な目的を考えます。最初の目的は
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;\frac{\partial&space;f_I}{\partial&space;\mathbf{c}}&space;(\mathbf{0},\beta)&space;\approx&space;0" title="\frac{\partial f_I}{\partial \mathbf{c}} (\mathbf{0},\beta) \approx 0" />
+を強制するもので、言い換えれば、基底点がほぼ臨界点であることを意味します。2番目の目的は、条件数
+
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;\kappa&space;\left(\frac{\partial^2f_I}{\partial^2&space;c}(\mathbf{0},&space;\beta)\right)&space;=&space;\lambda_{max}\left(\frac{\partial^2&space;f_I}{\partial^2&space;c}(\mathbf{0},&space;\beta)\right)&space;/&space;\lambda_{min}&space;\left(\frac{\partial^2&space;f_I}{\partial^2&space;c}&space;(\mathbf{0},&space;\beta)&space;\right)" title="\kappa \left(\frac{\partial^2f_I}{\partial^2 c}(\mathbf{0}, \beta)\right) = \lambda_{max}\left(\frac{\partial^2 f_I}{\partial^2 c}(\mathbf{0}, \beta)\right) / \lambda_{min} \left(\frac{\partial^2 f_I}{\partial^2 c} (\mathbf{0}, \beta) \right)" />
+
+を最小化します。この目的は、各最適解の周りの損失面を正規化し、
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;f_I(\mathbf{c},\beta)" title="f_I(\mathbf{c},\beta)" />
+の大きな収束半径を促進します。この設定で、我々は$\beta$を最適化するために以下の目的関数を定式化します。
+$$
+min_beta
+$$
