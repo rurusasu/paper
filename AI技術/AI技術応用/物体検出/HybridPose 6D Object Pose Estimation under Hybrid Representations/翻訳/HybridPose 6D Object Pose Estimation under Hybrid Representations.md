@@ -26,6 +26,11 @@ RGB画像からオブジェクトの6Dポーズを推定することは、3Dビ�
 
 精度は向上しましたが、私たちのアプローチは効率的であり、一般的なワークステーションでは毎秒30フレームで実行されます。洗練されたネットワークアーキテクチャを使用して単一の中間表現（Pix2Pose [30]など）を予測するアプローチと比較して、HybridPoseは、比較的単純なネットワークを使用してハイブリッド表現を予測することにより、かなり優れたパフォーマンスを実現します。
 
+
+![Fig1](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/HybridPose%206D%20Object%20Pose%20Estimation%20under%20Hybrid%20Representations/%E7%94%BB%E5%83%8F/%E5%9B%B31.png)\
+図1<br>
+HybridPoseは、キーポイント、エッジベクトル、対称性の対応を予測します。(a)では、対象のオブジェクト(ドリラー)が部分的に隠れている入力RGB画像を示しています。(b)では、赤いマーカーは予測された2Dキーポイントを示します。(c)では、エッジベクトルはすべてのキーポイント間で完全に接続されたグラフによって定義されます。(d)では、対称の対応により、オブジェクトの各2Dピクセルが対称の対応物に接続されます。説明のために、この例では5755個の検出されたオブジェクトピクセルから50個のランダムサンプルの対称対応のみを描画します。予測されたポーズ(f)は、すべての予測を3Dテンプレートと共同で調整することによって取得されます。これには、非線形最適化問題の解決が含まれます。
+
 # 2. Related Works
 **ポーズの中間表現**。RGB画像で幾何学的情報を表現するために、普及している中間表現がキーポイントであり、最先端のパフォーマンスを実現します[34、32、36]。対応する姿勢推定パイプラインは、キーポイント予測とPnPアルゴリズムによって初期化された姿勢回帰を組み合わせます[18]。キーポイント予測は通常、ニューラルネットワークによって生成されます。以前の研究では、さまざまなタイプのテンソル記述子を使用して2Dキーポイント座標を表現しています。一般的なアプローチでは、キーポイントをヒートマップのピークとして表します[28、48]。これは、キーポイントがふさがれている場合に最適ではなくなります。これは、入力画像がその場所の明確な視覚的手がかりを提供しないためです。別のキーポイント表現には、ベクトルフィールド[34]とパッチ[14]が含まれます。これらの表現により、オクルージョン下でのキーポイント予測が向上し、最終的には姿勢推定の精度が向上します。ただし、キーポイントだけでは、オブジェクトのポーズのまばらな表現であり、推定精度を向上させる可能性は限られています。
 
@@ -329,7 +334,9 @@ EPnP[18]に従って、xを次のように計算します
 
 を最小化します。この目的は、各最適解の周りの損失面を正規化し、
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;f_I(\mathbf{c},\beta)" title="f_I(\mathbf{c},\beta)" />
-の大きな収束半径を促進します。この設定で、我々は$\beta$を最適化するために以下の目的関数を定式化します。
+の大きな収束半径を促進します。この設定で、我々は
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\beta" title="\beta" />
+を最適化するために以下の目的関数を定式化します。
 
 <img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\min_{\beta}&space;\sum_{I&space;\in&space;T_{val}}&space;||&space;\frac{\partial&space;f_I}{\partial&space;\mathbf{c}}(\mathbf{0},&space;\beta)&space;||^2&space;&plus;&space;\gamma\kappa&space;\left(&space;\frac{\partial^2&space;f_I}{\partial^2&space;\mathbf{c}}(\mathbf{0},&space;\beta)&space;\right)" title="\min_{\beta} \sum_{I \in T_{val}} || \frac{\partial f_I}{\partial \mathbf{c}}(\mathbf{0}, \beta) ||^2 + \gamma\kappa \left( \frac{\partial^2 f_I}{\partial^2 \mathbf{c}}(\mathbf{0}, \beta) \right)" />
 
@@ -338,3 +345,57 @@ EPnP[18]に従って、xを次のように計算します
 は
 <img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;10^{-4}" title="10^{-4}" />
 に設定されている。次に、(10)で使用したのと同じ方法を用いて(11)を最適化する。
+
+# 4 Experimental Evaluation
+本節では、提案手法の実験評価を行います。4.1 節では、実験のセットアップについて説明します。4.2 節では、HybridPoseを他の6Dポーズ推定方法と定量的および定性的に比較します。4.3 節では、対称性の対応、エッジベクトル、およびリファインメントサブモジュールの有効性を調査するためのアブレーション研究を紹介します。
+
+## 4.1. Experimental Setup
+**データセット**\
+6次元ポーズ推定問題で広く使われている2つのベンチマークデータセット、Linemod [12]とOcclusion Linemod [3]を用いて検討する。 Linemodと比較してOcclusion Linemodの方が、オブジェクトがオクルージョン下にある例が多く含まれています。私たちのキーポイントアノテーション戦略は、[34]のものと同じです。つまり、最も遠いポイントサンプリングアルゴリズムを介して
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\kappa|&space;=&space;8" title="|\kappa| = 8" />
+キーポイントを選択します。エッジベクトルは、キーポイントの各ペアを接続するベクトルとして定義されます。合計すると、各オブジェクトには
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\varepsilon|&space;=&space;\frac{|\kappa|\cdot(|\kappa|-1)}2&space;=&space;28" title="|\varepsilon| = \frac{|\kappa|\cdot(|\kappa|-1)}2 = 28" />
+のエッジがあります。さらに、[8]で提案されたアルゴリズムを使用して、LinemodおよびOcclusion Linemodに反射対称ラベルで注釈を付けます。各データセットでは、トレーニング用の例の80％、検証用の20個のインスタンス、テスト用の残りをランダムに選択します。
+
+**実装の詳細**\
+ResNet[11]とImageNet[7]の事前トレーニング済みの重みを使用して、予測ネットワーク
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;f^{\kappa}_{\theta},&space;f^{\varepsilon}_{\phi}," title="f^{\kappa}_{\theta}, f^{\varepsilon}_{\phi}," />
+および
+<img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_jvn&space;f^{S}_{\gamma}" title="f^{S}_{\gamma}" />
+を構築します。予測ネットワークは、サイズ
+(3, H, W)のRGB画像
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;I" title="I" />
+を入力として受け取り、サイズ(C, H, W)のテンソルを出力します。ここで、(H, W)は画像解像度で、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;C&space;=&space;1&plus;&space;2|\kappa|&space;&plus;&space;2|\varepsilon|&space;&plus;&space;2" title="C = 1+ 2|\kappa| + 2|\varepsilon| + 2" />
+は、出力テンソルのチャネル数です。
+
+出力テンソルの最初のチャネルは2値セグメンテーションマスクMです。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;M(x,&space;y)=&space;1" title="M(x, y)= 1" />
+の場合、
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;(x,y)" title="(x,y)" />
+は入力画像
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;I" title="I" />
+の対象オブジェクトのピクセルに対応します。セグメンテーションマスクは学習されていますクロスエントロピー損失を使用します。
+
+出力テンソルの後の
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;2|\kappa|" title="2|\kappa|" />
+チャネルは、すべての
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\kappa|" title="|\kappa|" />
+キーポイントのx成分とy成分を与える。この
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;2|\kappa|" title="2|\kappa|" />
+チャネルテンソルとセグメンテーションマスクMから2Dキーポイントの座標を抽出するために、投票ベースのキーポイントローカリゼーションスキーム[34]が適用されます。
+
+出力テンソルの次の
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;2|\varepsilon|" title="2|\varepsilon|" />
+チャネルは、すべての
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;|\varepsilon|" title="|\varepsilon|" />
+エッジのxおよびyコンポーネントを提供します。これをエッジと呼びます。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;i(0&space;\leq&space;i&space;<&space;|\varepsilon|)" title="i(0 \leq i < |\varepsilon|)" />
+をエッジのインデックスとすると
+
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;Edge_i&space;=&space;\{\(Edge(2i,&space;x,&space;y),&space;Edge(2i&plus;1,&space;x,&space;y)\)|&space;M&space;(x,&space;y)&space;=&space;1\}" title="Edge_i = \{\(Edge(2i, x, y), Edge(2i+1, x, y)\)| M (x, y) = 1\}" />
+
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;Edge_i" title="Edge_i" />
+は、Edgeのi番目のエッジベクトルのピクセルごとの予測を含む2タプルの集合です。
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;Edge_i" title="Edge_i" />
+の平均が予測エッジとして抽出されます。
