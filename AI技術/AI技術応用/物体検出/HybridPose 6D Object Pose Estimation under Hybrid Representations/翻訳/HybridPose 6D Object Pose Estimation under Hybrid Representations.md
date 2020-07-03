@@ -222,7 +222,7 @@ EPnP[18]に従って、xを次のように計算します
 <img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\sum_{i&space;=&space;1}^4&space;\gamma_iR_i" title="\sum_{i = 1}^4 \gamma_iR_i" />
 を剛体変換に射影します。スペースの制約のため、詳細はサポートに委ねています。
 
-**細分割サブモジュール**。
+**細分割サブモジュール**\
 （5）はハイブリッド中間表現を組み合わせ、適切な初期化を可能ですが、予測された要素の外れ値を直接モデル化しているわけではありません。また、別の制限として（1）と（2）では、キーポイントベースのポーズ推定で有効であることが知られている（キーポイントとエッジに関する）射影誤差を最小化しません（c.f. [35]）．
 
 初期オブジェクトポー
@@ -288,7 +288,7 @@ EPnP[18]に従って、xを次のように計算します
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;T_{val}" title="T_{val}" />
 を使用してハイパーパラメータをトレーニングすることに焦点を当てます。
 
-**初期化サブモジュール**。
+**初期化サブモジュール**\
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;R^{init}_I" title="R^{init}_I" />
 と
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;t^{init}_I" title="t^{init}_I" />
@@ -302,7 +302,7 @@ EPnP[18]に従って、xを次のように計算します
 
 ハイパーパラメータの数はかなり少なく、ポーズの初期化ステップでは明示的な表現ができないため，有限差分法を用いて数値勾配つまり、勾配を周囲のハイパーパラメータのサンプルに当てはめることによって現在のソリューションを計算する。次に、最適化のためにバックトラックライン検索を適用します。
 
-**細分割サブモジュール**。
+**細分割サブモジュール**\
 このサブモジュールのハイパーパラメタを
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\beta&space;=&space;{\{\beta_\kappa,&space;\beta_\epsilon&space;\beta_S\}}" title="\beta = {\{\beta_\kappa, \beta_\epsilon \beta_S\}}" />
 とする。各インスタンス
@@ -330,6 +330,11 @@ EPnP[18]に従って、xを次のように計算します
 を最小化します。この目的は、各最適解の周りの損失面を正規化し、
 <img src="https://latex.codecogs.com/gif.latex?\bg_black&space;\fn_cm&space;f_I(\mathbf{c},\beta)" title="f_I(\mathbf{c},\beta)" />
 の大きな収束半径を促進します。この設定で、我々は$\beta$を最適化するために以下の目的関数を定式化します。
-$$
-min_beta
-$$
+
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\min_{\beta}&space;\sum_{I&space;\in&space;T_{val}}&space;||&space;\frac{\partial&space;f_I}{\partial&space;\mathbf{c}}(\mathbf{0},&space;\beta)&space;||^2&space;&plus;&space;\gamma\kappa&space;\left(&space;\frac{\partial^2&space;f_I}{\partial^2&space;\mathbf{c}}(\mathbf{0},&space;\beta)&space;\right)" title="\min_{\beta} \sum_{I \in T_{val}} || \frac{\partial f_I}{\partial \mathbf{c}}(\mathbf{0}, \beta) ||^2 + \gamma\kappa \left( \frac{\partial^2 f_I}{\partial^2 \mathbf{c}}(\mathbf{0}, \beta) \right)" />
+
+ここで
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;\gamma" title="\gamma" />
+は
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\bg_black&space;\fn_jvn&space;10^{-4}" title="10^{-4}" />
+に設定されている。次に、(10)で使用したのと同じ方法を用いて(11)を最適化する。
