@@ -7,7 +7,7 @@
 ## 著者
 Joseph Redmon, Ali Farhadi
 ## 掲載
-"Yolov3: An incremental improvement,".arXiv preprint arXiv:1804.02767, 2018.
+"Yolov3: An incremental improvement," arXiv preprint arXiv:1804.02767, 2018.
 
 # Abstract
 YOLOのアップデートをご紹介します！私たちはそれをより良くするために小さな設計変更をたくさん加えました。また、かなり膨張したこの新しいネットワークをトレーニングしました。前回より少し大きいですが、より正確です。まだ高速ですから心配しないでください。 320で320 YOLOv3は22msで28.2 mAPで動作し、SSDと同じくらい正確ですが3倍高速です。古い.5 IOU mAP検出メトリックを見ると、YOLOv3は非常に優れています。 Titan Xでは、51 msで57.9 AP50を達成しています。RetinaNetで198 msで57.5 AP50と比較しています。同様のパフォーマンスですが、3.8倍高速です。いつものように、すべてのコードはhttps://pjreddie.com/yolo/でオンラインです。
