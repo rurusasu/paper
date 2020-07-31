@@ -2,6 +2,8 @@
 
 # 備考
 
+[元論文](https://github.com/rurusasu/paper/blob/master/AI%E6%8A%80%E8%A1%93/CNN/AlexNet%EF%BC%9AImageNet%20Classification%20with%20Deep%20Convolutional/%E5%85%83%E8%AB%96%E6%96%87/AlexNet.pdf)
+
 ## 著者
 
 Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton
