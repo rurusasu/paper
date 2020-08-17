@@ -150,3 +150,70 @@ S を設定する 2 番目のアプローチはマルチスケールトレーニ
 で事前トレーニングしました。
 
 ## 3.2. TESTING
+
+テスト時には，訓練された ConvNet と入力画像が与えられ，以下の方法で分類されます．まず，
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" title="Q" /></a>
+と呼ばれる（テストスケールとも呼ぶ）事前に定義された最小画像側に等方的に再スケーリングされる．
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" title="Q" /></a>
+は必ずしも学習スケール
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" title="S" /></a>
+と等しいとは限らないことに注意する (第 4 節で示すように、各
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" title="S" /></a>
+にいくつかの
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q" title="Q" /></a>
+値を使用すると、パフォーマンスが向上します。) 次に、ネットワークは、(Sermanet ら, 2014)と同様の方法で、再スケーリングされたテスト画像上に密に適用される。すなわち、全結合層は、最初に畳み込み層に変換される (最初のＦＣ層は
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;7&space;\times&space;7" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;7&space;\times&space;7" title="7 \times 7" /></a>
+の畳み込み層に、最後の２つのＦＣ層は
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;1&space;\times&space;1" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;1&space;\times&space;1" title="1 \times 1" /></a>
+の畳み込み層に変換される) 。結果として得られた完全畳み込みネットは，(トリミングされていない) 画像全体に適用されます．その結果、クラスの数に等しいチャンネル数と、入力画像サイズに依存した可変空間分解能を持つクラススコアマップが得られる。最後に、画像のクラススコアの固定サイズベクトルを得るために、クラススコアマップは空間的に平均化されます (合計値がプールされます)。元画像と反転画像に変換後のソフトマックスクラスの分布を平均化して、画像の最終スコアを求めます。
+
+完全畳み込みネットワークは画像全体に適用されるため，テスト時に複数の切り取られた画像をサンプリングする必要がなく(Krizhevsky ら., 2012)，切り取られた画像ごとにネットワークの再計算が必要となるため効率が悪い．一方、Szegedy ら(2014)が行ったように、大規模な切り取られた画像のセットを使用すると、完全畳み込みネットに比べて入力画像のサンプリングが細かくなるため、精度の向上につながる可能性があります。また、複数の切り取られた画像を用いた評価は、畳み込み境界条件が異なるため、密な評価を補完するものです。ConvNet を画像の切り取りに適用する場合、畳み込み特徴マップはゼロでパディングされますが、密な評価の場合、同じ切り取り画像のパディングは (畳み込みと空間プーリングの両方に起因する) ネットワーク全体の受容野が大幅に増加するため、より多くのコンテキストがキャプチャされます。実際には、複数の切り取られた画像による計算時間の増加は、精度の潜在的な向上を正当化するものではないと考えていますが、参考のために、我々のネットワークを 3 つのスケールで各スケール 50 枚の切り取られた画像 (2 フリップの
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;5&space;\times&space;5" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;5&space;\times&space;5" title="5 \times 5" /></a>
+の規則的なグリッドで)を用いて、合計 150 枚の切り取られた画像を評価しています。これは Szegedy ら (2014) が使用した 4 つのスケールで 144 枚の切り取られた画像に匹敵するものです。
+
+## 3.3. IMPLEMENTATION DETAILS
+
+私たちの実装は、一般に入手可能な C ++ Caffe ツールボックス（Jia、2013）（2013 年 12 月に分岐）から派生していますが、多数の重要な変更が含まれているため、単一のシステムにインストールされている複数の GPU でトレーニングと評価を実行できます。 フルサイズの（トリミングされていない）画像を複数のスケールでトレーニングおよび評価します（上記のとおり）。 マルチ GPU トレーニングは、データの並列処理を利用し、トレーニング画像の各バッチを複数の GPU バッチに分割し、各 GPU で並列に処理することによって実行されます。 GPU バッチ勾配が計算された後、それらは平均化されて、完全なバッチの勾配が取得されます。 勾配計算は GPU 間で同期しているため、結果は単一の GPU でトレーニングした場合とまったく同じです。
+
+ConvNet トレーニングを高速化するより洗練された方法が最近提案され た(Krizhevsky、2014 年)。この方法は、ネットのさまざまなレイヤーにモデルとデータの並列処理を採用していますが、我々の概念的に非常に単純なスキームでは、単一の GPU を使用する場合と比較して，市販の 4GPU システムを使用した場合、すでに 3.75 倍の高速化が得られることがわかった。4 つの NVIDIA Titan Black GPU を搭載したシステムでは、アーキテクチャに応じて、1 つのネットのトレーニングに 2〜3 週間かかりました。
+
+# 4. CLASSIFICATION EXPERIMENTS
+
+データセット。 このセクションでは、ILSVRC-2012 データセット（ILSVRC 2012–2014 チャレンジに使用された）で説明されている ConvNet アーキテクチャによって達成された画像分類結果を示します。 データセットには 1000 クラスの画像が含まれており、トレーニング（130 万枚の画像）、検証（5 万枚の画像）、テスト（10 万枚の保留されたクラスラベルの画像）の 3 つのセットに分かれています。 分類のパフォーマンスは、2 つのメジャーを使用して評価されます。上位 1 と上位 5 のエラーです。 前者は、マルチクラスの分類エラーです。つまり、誤って分類された画像の割合です。 後者は ILSVRC で使用される主な評価基準であり、グラウンドトゥルースカテゴリが上位 5 つの予測カテゴリの外側になるような画像の比率として計算されます。
+
+ほとんどの実験では、検証セットをテストセットとして使用しました。 特定の実験もテストセットで実行され、ILSVRC-2014 コンテストへの「VGG」チームエントリとして公式 ILSVRC サーバーに送信されました (Russakovsky ら、2014)。
+
+# 4.1. SINGLE SCALE EVALUATION
+
+最初に、2.2 節で説明したレイヤー構成を使用して、個々の ConvNet モデルのパフォーマンスを単一のスケールで評価します。テスト画像のサイズは、固定
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" title="S" /></a>
+の場合は
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q=S" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q=S" title="Q=S" /></a>
+、ジッター
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S" title="S" /></a>
+が
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S&space;\in&space;[S_{min},&space;S_{max}]" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S&space;\in&space;[S_{min},&space;S_{max}]" title="S \in [S_{min}, S_{max}]" /></a>
+の場合は
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q&space;=&space;0.5(S_{min}&space;&plus;&space;S_{max})" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;Q&space;=&space;0.5(S_{min}&space;&plus;&space;S_{max})" title="Q = 0.5(S_{min} + S_{max})" /></a>
+に設定されました。 結果を表 3 に示す。
+
+**表 3 : 単一のテストスケールでの ConvNet パフォーマンス。**\
+![表3](../画像/表3.png)
+
+まず、ローカル応答正規化（A-LRN ネットワーク）を使用しても、正規化レイヤーがないモデル A では改善されないことに注意してください。 したがって、より深いアーキテクチャ（B–E）では正規化を採用していません。
+
+第 2 に、ConvNet の深さが A の 11 レイヤーから E の 19 レイヤーまで増すと、分類エラーが減少することがわかります。特に、同じ深さにもかかわらず、構成 C (3 つの
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;1&space;\times&space;1" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;1&space;\times&space;1" title="1 \times 1" /></a>
+畳み込み層を含む) は、ネットワーク全体で
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;3\times3" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;3\times3" title="3\times3" /></a>
+畳み込みを使用する構成 D よりもパフォーマンスが低下します。これは、追加の非線形性が役立つ（C が B より優れている）一方で、自明でない受容野を持つ変畳み込みフィルターを使用して空間コンテキストをキャプチャすることも重要であることを示しています (D は C より優れています)。深度が 19 レイヤーに達すると、アーキテクチャのエラー率は飽和しますが、より深いモデルは、大規模なデータセットに役立つ可能性があります。また、ネット B をネット B の
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;3\times3" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;3\times3" title="3\times3" /></a>
+畳み込み層の各ペアを 1 つの
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;5\times5" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;5\times5" title="5\times5" /></a>
+畳み込み層に置き換えることにより B から派生した浅いネットワーク (これは、２.3 節で説明したのと同じ受容野を有する) と比較しました。浅いネットのトップ 1 エラーは、B (中央をトリミングした画像) のエラーよりも 7％高いと測定されました。これは、小さいフィルターの深いネットが大きいフィルターの浅いネットよりも優れていることを示しています。最後に、トレーニング時にスケールのジッタリング (
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S&space;\in&space;[256,&space;512]" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S&space;\in&space;[256,&space;512]" title="S \in [256, 512]" /></a>
+) を使用すると、テスト時に単一のスケールが使用されている場合でも、最小側が固定された画像 (
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S=256" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S=256" title="S=256" /></a>
+または
+<a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S=384" target="_blank"><img src="https://latex.codecogs.com/png.latex?\inline&space;\dpi{100}&space;\bg_white&space;\fn_jvn&space;S=384" title="S=384" /></a>
+) でのトレーニングよりもはるかに優れた結果が得られます。 これは、スケールジッターによるトレーニングセットの増強が、マルチスケール画像統計のキャプチャに実際に役立つことを確認しています。
