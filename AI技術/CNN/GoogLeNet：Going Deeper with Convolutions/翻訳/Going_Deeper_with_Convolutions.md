@@ -7,7 +7,7 @@ Christian Szegedy, Wei Liu, Yangqing Jia, Pierre Sermanet, Scott Reed, Dragomir 
 
 # 掲載
 
-"Going Deeper with Convolutions", Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)，2015．
+"Going Deeper with Convolutions", Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)，pp.1--9, 2015．
 
 # Abstract
 ImageNet大規模視覚認識チャレンジ2014（ILSVRC14）で分類と検出を行うための新しい最先端の技術を実現する、コードネームInceptionと呼ばれる深い畳み込みニューラルネットワークアーキテクチャを提案します。 このアーキテクチャの主な特徴は、ネットワーク内のコンピューティングリソースの利用率が向上することです。 慎重に作成された設計により、計算量を一定に保ちながら、ネットワークの深さと幅を増やしました。 品質を最適化するために、アーキテクチャの決定はヘブの原則とマルチスケール処理の直感に基づいていました。 ILSVRC14の提出で使用される1つの特定の化身は、GoogLeNetと呼ばれ、22層のディープネットワークであり、その品質は分類と検出のコンテキストで評価されます。

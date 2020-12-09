@@ -10,7 +10,7 @@ Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton
 
 ## 掲載
 
-"ImageNet Classification with Deep Convolutional Neural Networks." In NIPS, 2012.
+``Imagenet classification with deep convolutionalneural networks.'' Procs. Advances in neural information processing systems, pp. 1097–1105, 2012.
 
 # 要約
 AlexNetとは，図に示すように5つの畳み込み層と3つの全結合層の計8層で構成されるネットワークである．活性化関数にはRectified Linear Units (ReLUs)を使用している．
