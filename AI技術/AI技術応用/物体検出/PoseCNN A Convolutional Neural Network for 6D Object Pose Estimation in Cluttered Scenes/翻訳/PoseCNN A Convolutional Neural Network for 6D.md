@@ -23,7 +23,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 本論文では、既存のメソッドの制限を克服しようとする6Dオブジェクト姿勢推定の一般的なフレームワークを提案します。 PoseCNNという名前のend to endの6Dポーズ推定用の新しい畳み込みニューラルネットワーク（CNN）を紹介します。 PoseCNNの背後にある重要なアイデアは、ポーズ推定タスクをさまざまなコンポーネント(構成要素)に分離することです。これにより、ネットワークはコンポーネント間の依存関係と非依存関係を明示的にモデル化できます。具体的には、PoseCNNは図1に示すように3つの関連タスクを実行します。
 
-![PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/PoseCNN%20for%206D%20object%20pose%20estimation.png)\
+![PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/PoseCNN%20for%206D%20object%20pose%20estimation.png)\
 図1 <br>6Dオブジェクトポーズ推定用の新しいPoseCNNを提案します。ネットワークは、セマンティックラベリング、3D平行移動推定、3D回転回帰の3つのタスクを実行するようにトレーニングされています。
 
 最初に、PoseCNNは入力画像の各ピクセルのオブジェクトラベルを予測します。次に、各ピクセルから中心に向かう単位ベクトルを予測して、オブジェクトの中心の2Dピクセル座標を推定します。セマンティックラベルを使用して、オブジェクトに関連付けられた画像ピクセルは、画像内のオブジェクトの中心位置に投票します。さらに、ネットワークはオブジェクトの中心までの距離も推定します。既知のカメラの組み込みを想定すると、2Dオブジェクトの中心とその距離の推定により、3D変換Tを復元できます。最後に、3D回転Rは、オブジェクトのバウンディングボックス内で抽出された畳み込み特徴をRのクォータニオン表現に回帰することによって推定されます。これから説明するように、RとTを推定するための2D中心投票とそれに続く回転回帰(rotation regression)は、テクスチャ/テクスチャのないオブジェクトに適用でき、オクルージョンに対してもネットワークが投票するようにトレーニングされているため、オクルージョンに対してロバストです。
@@ -88,10 +88,10 @@ $$
 2Dオブジェクトの中心を特定する簡単な方法は、既存のキーポイント検出方法のように中心点を直接検出することです[22、7]。ただし、オブジェクトの中心が塞がれている場合、これらのメソッドは機能しません。画像パッチが検出のためにオブジェクトの中心に投票する従来のImplicit Shape Model（ISM）に触発されて[18]、画像の各ピクセルの中心方向に回帰するようにネットワークを設計します。具体的には、画像上のピクセル$\bm{p}=(x,y)^T$の場合、3つの変数に回帰します。
 
 $$
-(x,y) = 
+(x,y) =
 \left(
     \begin{array}{r}
-        n_x = \frac{c_x - x}{||c-p||}, 
+        n_x = \frac{c_x - x}{||c-p||},
         n_y = \frac{c_y - y}{||c-p||},
         T_z
     \end{array}
