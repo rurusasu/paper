@@ -23,7 +23,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 本論文では、既存のメソッドの制限を克服しようとする6Dオブジェクト姿勢推定の一般的なフレームワークを提案します。 PoseCNNという名前のend to endの6Dポーズ推定用の新しい畳み込みニューラルネットワーク（CNN）を紹介します。 PoseCNNの背後にある重要なアイデアは、ポーズ推定タスクをさまざまなコンポーネント(構成要素)に分離することです。これにより、ネットワークはコンポーネント間の依存関係と非依存関係を明示的にモデル化できます。具体的には、PoseCNNは図1に示すように3つの関連タスクを実行します。
 
-![PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/PoseCNN%20for%206D%20object%20pose%20estimation.png)\
+![PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig1.png)\
 図1 <br>6Dオブジェクトポーズ推定用の新しいPoseCNNを提案します。ネットワークは、セマンティックラベリング、3D平行移動推定、3D回転回帰の3つのタスクを実行するようにトレーニングされています。
 
 最初に、PoseCNNは入力画像の各ピクセルのオブジェクトラベルを予測します。次に、各ピクセルから中心に向かう単位ベクトルを予測して、オブジェクトの中心の2Dピクセル座標を推定します。セマンティックラベルを使用して、オブジェクトに関連付けられた画像ピクセルは、画像内のオブジェクトの中心位置に投票します。さらに、ネットワークはオブジェクトの中心までの距離も推定します。既知のカメラの組み込みを想定すると、2Dオブジェクトの中心とその距離の推定により、3D変換Tを復元できます。最後に、3D回転Rは、オブジェクトのバウンディングボックス内で抽出された畳み込み特徴をRのクォータニオン表現に回帰することによって推定されます。これから説明するように、RとTを推定するための2D中心投票とそれに続く回転回帰(rotation regression)は、テクスチャ/テクスチャのないオブジェクトに適用でき、オクルージョンに対してもネットワークが投票するようにトレーニングされているため、オクルージョンに対してロバストです。
@@ -51,7 +51,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 ## A. Overview of the Network
 
-![Architecture of PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Architecture%20of%20PoseCNN%20for%206D%20object%20pose%20estimation.png)\
+![Architecture of PoseCNN for 6D object pose estimation](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig2.png)\
 図2. 6Dオブジェクトポーズ推定のためのPoseCNNのアーキテクチャ。
 
 図2は、6Dオブジェクトポーズ推定のためのネットワークのアーキテクチャを示しています。ネットワークには2つの段階があります。最初のステージは、13の畳み込みレイヤーと4つのmaxpoolingレイヤーで構成され、入力画像から異なる解像度このネットワークは，特徴抽出器との特徴マップを抽出します。抽出された特徴はネットワークで実行されるすべてのタスクで共有されるため、この段階はネットワークのバックボーンです。第2ステージは、第1ステージで生成された高次元の特徴マップを低次元のタスク固有の機能に埋め込む埋め込みステップで構成されます。次に、ネットワークは、6Dポーズ推定につながる3つの異なるタスク、つまり、セマンティックラベリング、3D平行移動推定、3D回転回帰を実行します。
@@ -63,7 +63,7 @@ Yu Xiang, Tanner Schmidt, Venkatraman Narayanan, Dieter Fox
 
 ## C. 3D Translation Estimation
 
-![Illustration of the object coordinate system](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Illustration%20of%20the%20object%20coordinate%20system.png)\
+![Illustration of the object coordinate system](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig3.png)\
 図3. オブジェクト座標系とカメラ座標系の図。<br> 3D平行移動は、オブジェクトの2D中心を特定し、カメラから3D中心距離を推定することによって推定できます。
 
 図3に示すように、3D並進$\bm{T}=(T_x,T_y,T_z )^T$は、カメラ座標系におけるオブジェクトの原点の座標です。 $\bm{T}$を推定する素朴な方法は、画像の特徴を直接$\bm{T}$に回帰することです。ただし、オブジェクトは画像の任意の場所に表示される可能性があるため、このアプローチは一般化できません。また、同じカテゴリの複数のオブジェクトインスタンスを処理することはできません。したがって、画像内の2Dオブジェクトの中心を特定し、カメラからのオブジェクト距離を推定することにより、3D変換を推定することを提案します。見るために、画像への$\bm{T}$の投影が$c=(c_x,c_y )^T$であると仮定します。ネットワークが画像内の$c$を特定し、深さTzを推定できる場合、ピンホールカメラを想定した次の投影方程式に従って$T_x$と$T_y$を復元できます。
@@ -104,27 +104,27 @@ $$
 
 オブジェクトの2Dオブジェクトの中心cを見つけるために、ハフ投票層が設計され、ネットワークに統合されています。ハフ投票層は、ピクセル単位のセマンティックラベリング結果と中心回帰結果を入力として受け取ります。オブジェクトクラスごとに、まず画像内のすべての場所の投票スコアを計算します。投票スコアは、対応する画像の場所がクラス内のオブジェクトの中心である可能性を示します。具体的には、オブジェクトクラスの各ピクセルは、ネットワークから予測された光線に沿った画像の位置に投票を追加します（図4を参照）。オブジェクトクラスのすべてのピクセルを処理した後、すべての画像の場所の投票スコアを取得します。次に、オブジェクトの中心が最大スコアの場所として選択されます。同じオブジェクトクラスの複数のインスタンスが画像に表示される場合は、投票スコアに非最大抑制を適用し、スコアが特定のしきい値よりも大きい場所を選択します。
 
-![Illustration of Hough voting](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Illustration%20of%20Hough%20voting.png)\
+![Illustration of Hough voting](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig4.png)\
 図4. オブジェクト中心の位置特定のためのハフ投票のイラスト<br>
 各ピクセルネットワークから予測された光線に沿って画像の位置に投票します。
 
 オブジェクトの中心のセットを生成した後、オブジェクトの中心に投票するピクセルを中心のインライアと見なします。次に、中心の深度予測Tzは、インライアによって予測された深度の平均として単純に計算されます。最後に、式1を使用して、3D平行移動Tを推定できます。さらに、ネットワークは、オブジェクトの境界ボックスをすべてのインライアの境界となる2D長方形として生成し、境界ボックスは3D回転回帰に使用されます。
 
 ## D. 3D Rotation Regression
-図2の一番下の部分は、3D回転回帰ブランチを示しています。 Hough投票レイヤーから予測されたオブジェクトバウンディングボックスを使用して、2つのRoIプーリングレイヤー[11]を利用して、3D回転回帰のネットワークの第1ステージで生成された視覚的特徴を「切り取ってプール」します。プールされた特徴マップは一緒に追加され、3つの完全接続（FC）レイヤーに与えられます。最初の2つのFCレイヤーのディメンションは4096で、最後のFCレイヤーのディメンションは$4 \times n$で、$n$はオブジェクトクラスの数です。クラスごとに、最後のFCレイヤーは、クォータニオンで表される3D回転を出力します。
+図2の一番下の部分は、3D回転回帰ブランチを示しています。 Hough投票レイヤーから予測されたオブジェクトバウンディングボックスを使用して、2つのRoIプーリングレイヤー[11]を利用して、3D回転回帰のネットワークの第1ステージで生成された視覚的特徴を「切り取ってプール」します。プールされた特徴マップは一緒に追加され、3つの完全接続（FC）レイヤーに与えられます。最初の2つのFCレイヤーのディメンションは4096で、最後のFCレイヤーのディメンションは$4 \times n$ で、$n$ はオブジェクトクラスの数です。クラスごとに、最後のFCレイヤーは、クォータニオンで表される3D回転を出力します。
 
 クォータニオン回帰をトレーニングするために、2つの損失関数を提案します。そのうちの1つは、対称オブジェクトを処理するように特別に設計されています。最初の損失はPoseLoss（PLOSS）と呼ばれ、3Dモデル空間で動作し、推定された方向を使用して、正しいモデルポーズ上のポイントとモデル上の対応するポイント間の平均二乗距離を測定します。 PLOSSは次のように定義されます。
 
 $$
-PLOSS(\bar{\bm{q}}, \bm{q}) = \frac{1}{2m} \sum_{x \in M} ||R(\bar{\bm{q}})x - R(\bm{q})x||^2
+PLOSS(\tilde{\bm{q}}, \bm{q}) = \frac{1}{2m} \sum_{x \in M} ||R(\tilde{\bm{q}})x - R(\bm{q})x||^2
 $$
 
-ここで、$M$は3Dモデルの点のセットを示し、$m$は点の数です。 $R(\bar{\bm{q}}$と$R(\bm{q})$は、それぞれ推定クォータニオンとグラウンドトゥルースクォータニオンから計算された回転行列を示します。推定された方向がグラウンドトゥルースの方向1と同じ場合、この損失には固有の最小値があります。残念ながら、対称オブジェクトは複数の正しい3D回転を持つことができるため、PLOSSは対称オブジェクトを適切に処理しません。対称オブジェクトでこのような損失関数を使用すると、ネットワークが不必要にペナルティされ、代替の3D回転の1つに回帰するため、トレーニング信号に一貫性がなくなる可能性があります。
+ここで、$M$ は3Dモデルの点のセットを示し、$m$ は点の数です。 $R(\tilde{\bm{q}})$と$R(\bm{q})$は、それぞれ推定クォータニオンとグラウンドトゥルースクォータニオンから計算された回転行列を示します。推定された方向がグラウンドトゥルースの方向1と同じ場合、この損失には固有の最小値があります。残念ながら、対称オブジェクトは複数の正しい3D回転を持つことができるため、PLOSSは対称オブジェクトを適切に処理しません。対称オブジェクトでこのような損失関数を使用すると、ネットワークが不必要にペナルティされ、代替の3D回転の1つに回帰するため、トレーニング信号に一貫性がなくなる可能性があります。
 
 PLOSSは、オブジェクトの対称性を手動で指定し、すべての正しい方向をグラウンドトゥルースオプションとして考慮することにより、対称オブジェクトを処理するように変更できる可能性がありますが、ここでは、対称性の指定を必要としない損失関数であるShapeMatch-Loss（SLOSS）を紹介します。 SLOSSは次のように定義されます。
 
 $$
-PLOSS(\bar{\bm{q}}, \bm{q}) = \frac{1}{2m} \sum_{x_1 \in M} \min_{x_2 \in M}||R(\bar{\bm{q}})x_1 - R(\bm{q})x_2||^2
+PLOSS(\tilde{\bm{q}}, \bm{q}) = \frac{1}{2m} \sum_{x_1 \in M} \min_{x_2 \in M}||R(\tilde{\bm{q}})x_1 - R(\bm{q})x_2||^2
 $$
 
 見てわかるように、ICPと同様に、この損失は推定モデルの向きの各ポイントとグラウンドトゥルースモデルの最も近いポイント間のオフセットを測定します。 2つの3Dモデルが互いに一致する場合、SLOSSは最小化されます。このように、SLOSSは、オブジェクトの3D形状の対称性に関して同等である回転にペナルティを課しません。
@@ -137,15 +137,15 @@ $$
 
 ## B. Dataset Characterisics
 
-![The subset of 21 YCB Objects selected to appear in our dataset.](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/The%20subset%20of%2021%20YCB%20Objects%20selected%20to%20appear%20in%20our%20dataset.png)\
+![The subset of 21 YCB Objects selected to appear in our dataset.](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig5.png)\
 図5. データセットに表示するために選択された21のYCBオブジェクトのサブセット。
 
 私たちが使用したオブジェクトは、図5に示すように、21のYCBオブジェクト[5]のサブセットです。これは、高品質の3Dモデルと奥行きの良い可視性のために選択されました。ビデオは、高速クロッピングモードでAsus Xtion Pro Live RGB-Dカメラを使用して収集されます。このデバイスは、デバイス上で1280x960画像をローカルにキャプチャし、USBを介して中央領域のみを送信することにより、640x480の解像度で30 FPSのRGB画像を提供します。これにより、低いFOVを犠牲にしてRGB画像の有効解像度が高くなりますが、深度センサーの最小範囲を考えると、これは許容できるトレードオフでした。完全なデータセットは133,827個の画像で構成され、LINEMODデータセットよりも2桁大きい。データセットに関連するその他の統計については、表1を参照してください。図6は、注釈付きのグラウンドトゥルースポーズに従って3Dモデルをレンダリングする、データセット内の1つの注釈の例を示しています。アノテーションの精度には、RGBセンサーのローリングシャッター、オブジェクトモデルの不正確さ、RGBセンサーと深度センサー間のわずかな非同期、カメラの固有パラメーターと外部パラメーターの不確実性など、いくつかのエラーの原因があることに注意してください。
 
 表1. STATISTICS OF OUR YCB-VIDEO DATASET\
-![STATISTICS OF OUR YCB-VIDEO DATASET](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/STATISTICS%20OF%20OUR%20YCB-VIDEO%20DATASET.png)
+![STATISTICS OF OUR YCB-VIDEO DATASET](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig6.png)
 
-![Left an example image from the data](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Left%20an%20example%20image%20from%20the%20dataset.png)\
+![Left an example image from the data](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig7.png)\
 図6. <br>左：データセットのサンプル画像。<br>
 右：このフレームのポーズアノテーションに従ってレンダリングされた、テクスチャ付き3Dオブジェクトモデル（YCBデータセットに付属）。
 
@@ -157,13 +157,13 @@ YCB-Videoデータセットでは、トレーニングに80本のビデオを使
 評価のために[13]で提案されている平均距離（ADD）メトリックを採用します。グラウンドトゥルースの回転Rと平行移動T、および推定回転〜Rと平行移動〜Tが与えられると、平均距離は、次のように変換された3Dモデルポイント間のペアワイズ距離の平均を計算します。
 
 $$
-ADD = \frac{1}{m} \sum_{x \in M} ||(\bm{R}x + \bm{T}) - (\bar{\bm{R}}x + \bar\bm{T})||
+ADD = \frac{1}{m} \sum_{x \in M} \left|\left| (\bm{R}x + \bm{T}) - (\tilde{\bm{R}}x + \tilde{T}) \right|\right|
 $$
 
 ここで、$M$は3Dモデルの点のセットを示し、$m$は点の数です。平均距離が事前定義されたしきい値よりも小さい場合、6Dポーズは正しいと見なされます。 OccludedLINEMODデータセットでは、しきい値は3Dモデルの直径の$10％$に設定されています。 EggboxやGlueなどの対称オブジェクトの場合、一部のビューではポイント間のマッチングが不明確です。したがって、平均距離は最も近いポイント距離を使用して計算されます。
 
 $$
-ADD - s = \frac{1}{m} \sum_{x_2 \in M} \min_{x_2 \in M}||(\bm{R}x_1 + \bm{T}) - (\bar{\bm{R}}x_2 + \bar\bm{T})||
+ADD-S = \frac{1}{m} \sum_{x_1 \in M} \left|\left| (\bm{R}x_1 + \bm{T}) - (\tilde{\bm{R}}x_2 + \tilde{T}) \right|\right|
 $$
 
 回転回帰の損失関数の設計は、これら2つの評価指標によって動機付けられています。ポーズの精度を計算する際に固定のしきい値を使用しても、そのしきい値に関してこれらの誤ったポーズでメソッドがどのように実行されるかを明らかにすることはできません。したがって、評価では距離のしきい値を変更します。この場合、**精度-しきい値曲線**をプロットし、曲線の下の領域を計算してポーズを評価できます。 3D空間で距離を計算する代わりに、変換された点を画像に投影してから、画像空間でペアワイズ距離を計算できます。このメトリックは再投影エラーと呼ばれ、カラー画像のみが使用されている場合に6D推定に広く使用されます。
@@ -176,7 +176,7 @@ PoseCNNは、TensorFlowライブラリを使用して実装されています[1]
 
 ## E. Analysis on the Rotation Regress Losses
 
-![Comparison between the PLOSS](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Comparison%20between%20the%20PLOSS.png)\
+![Comparison between the PLOSS](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig8.png)\
 図7. YCB-Videoデータセット内の3つの対称オブジェクトの6D姿勢推定のためのPLOSSとSLOSSの比較。
 
 まず、対称オブジェクトに対する回転回帰の2つの損失関数の影響を分析する実験を行います。図7は、トレーニングで2つの損失関数を使用した、YCBビデオデータセット内の2つの対称オブジェクト（ウッドブロックと大きなクランプ）の回転エラーヒストグラムを示しています。ウッドブロックと大きなクランプのPLOSSの回転誤差は、0度から180度です。 2つのヒストグラムは、ネットワークが対称オブジェクトによって混乱していることを示しています。 SLOSSのヒストグラムは、ウッドブロックでは180度の誤差、大きなクランプでは0度と180度に集中していますが、それらは座標軸を中心とした180度の回転に関して対称であるためです。
@@ -184,15 +184,15 @@ PoseCNNは、TensorFlowライブラリを使用して実装されています[1]
 ## F. Results on the YCB-Video Dataset
 
 表2. YCB-ビデオデータセットの6Dポーズ評価の精度-しきい値曲線の下の領域。 赤いObjectsは対称です。\
-![AREA UNDER THE ACCURACY-THRESHOLD CURVE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/AREA%20UNDER%20THE%20ACCURACY-THRESHOLD%20CURVE.png)
+![AREA UNDER THE ACCURACY-THRESHOLD CURVE](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig9.png)
 
-![(a) Detailed results on the YCB-Video dataset](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/(a)%20Detailed%20results%20on%20the%20YCB-Video%20dataset.png)\
+![(a) Detailed results on the YCB-Video dataset](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig10.png)\
 図8 <br>(a) YCB-Videoデータセットの詳細な結果。<br>
 (b) OccludedLINEMODデータセットでの再投影エラーのある精度しきい値曲線。
 
 表IIと図8（a）は、YCB-Videoデータセット内の21個のオブジェクトすべての詳細な評価を示しています。 ADDメトリックとADD-Sメトリックの両方を使用して、精度しきい値曲線の下の領域を表示します。ここで、平均距離のしきい値を変化させ、姿勢の精度を計算します。最大しきい値は10cmに設定されています。カラー画像のみを使用することにより、ネットワークは、6D姿勢推定のためのプリエンプティブRANSACアルゴリズムと組み合わせた3D座標回帰ネットワークを大幅に上回ります。 3D座標回帰結果にエラーがある場合、推定された6Dポーズはグラウンドトゥルースポーズから遠く離れてドリフトする可能性があります。ネットワーク内では、中心の位置確認により、オブジェクトが隠れている場合でも3D平行移動の推定を制限できます。ICPでポーズを調整すると、パフォーマンスが大幅に向上します。 ICPを使用したPoseCNNは、深度画像を使用する場合、3D座標回帰ネットワークと比較して優れたパフォーマンスを実現します。 ICPの最初のポーズは、収束にとって重要です。 PoseCNNは、ICPリファインメントのためのより良い初期6Dポーズを提供します。小さくてテクスチャーが薄いマグロの魚缶など、扱いが難しいオブジェクトがあることがわかります。大きなクランプと非常に大きなクランプは、外観が同じであるため、ネットワークも混乱しています。 3D座標回帰ネットワークは、バナナやボウルなどの対称オブジェクトをうまく処理できません。図9は、YCBビデオデータセットの6Dポーズ推定結果を示しています。中心が別のオブジェクトによって遮られている場合でも、中心の予測が非常に正確であることがわかります。色のみのネットワークは、すでに優れた6D姿勢推定を提供できます。 ICPの改良により、6Dポーズの精度がさらに向上しました。
 
-![Examples of 6D object pose estimation results](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/Examples%20of%206D%20object%20pose%20estimation%20results.png)\
+![Examples of 6D object pose estimation results](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PoseCNN%20A%20Convolutional%20Neural%20Network%20for%206D%20Object%20Pose%20Estimation%20in%20Cluttered%20Scenes/%E7%94%BB%E5%83%8F/fig11.png)\
 図9. PoseCNNのYCB-Videoデータセットの6Dオブジェクトポーズ推定結果の例。
 
 ## G. Results on the OccludedLINEMOD Dataset
