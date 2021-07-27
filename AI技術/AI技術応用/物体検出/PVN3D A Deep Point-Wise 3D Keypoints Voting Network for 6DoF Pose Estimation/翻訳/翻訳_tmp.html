@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <title>翻訳.md</title>
+
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+  
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+
+  <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+
+  <script>
+
+    mermaid.initialize({
+
+      startOnLoad: true,
+
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+
+        ? 'dark'
+
+        : 'default'
+
+    });
+
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"
+    integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"
+    integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx"
+    crossorigin="anonymous"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"
+    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe"
+    crossorigin="anonymous"></script>
+
+  <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      renderMathInElement(document.body, {
+
+        delimiters: [
+
+          { left: "$$", right: "$$", display: true },
+
+          { left: "$", right: "$", display: false },
+
+        ]
+
+      });
+
+    });
+
+  </script>
+
+</head>
+
+<body>
+
+  <h1 id="abst">Abst</h1>
+<p>本研究では、1枚のRGBD画像から6DoF物体の姿勢を推定するデータ駆動型の手法を開発しました。従来の手法では、ポーズパラメータを直接回帰していましたが、本手法では、キーポイントベースのアプローチにより、この困難な課題に取り組みます。具体的には、物体の3Dキーポイントを検出し、6Dポーズパラメータを最小二乗法で推定するディープハフボーティングネットワークを提案する。 我々の手法は、RGBベースの6DoF推定に成功した2Dキーポイントアプローチの自然な拡張である。本手法は、RGBベースの6DoF推定に成功している2Dキーポイントアプローチを自然に拡張したものであり、奥行き情報を追加することで、剛体の幾何学的制約を完全に利用することができ、ネットワークの学習と最適化が容易である。実験の結果、我々の手法は、いくつかのベンチマークにおいて、最先端の手法を大幅に上回ることが示されました。コードとビデオは以下のサイトでご覧いただけます。</p>
+<h1 id="1-%E7%B7%92%E8%A8%80">1. 緒言</h1>
+<p>本論文では，6DoFポーズ推定の問題を研究する．すなわち，正準フレームにおける物体の3次元位置と姿勢を認識することである．これは、ロボットによる把持・操作[6,48,55]、自律走行[11,5,53]、拡張現実[31]など、多くの実世界のアプリケーションにおいて重要な要素である。</p>
+<p>6DoFの推定は、照明の変化、センサーノイズ、シーンのオクルージョン、オブジェクトの切り詰めなどにより、非常に困難な問題であることがわかっています。従来の手法[19,30]では，画像と物体のメッシュモデルとの対応関係を抽出するために，人間が作成した特徴量を用いていました．しかし、このような経験的に人間が作成した特徴量は、照明条件の変化やオクルージョンの多いシーンでは性能が低下してしまう。最近では，機械学習や深層学習技術の爆発的な発展に伴い，ディープニューラルネットワーク（DNN）に基づく手法がこのタスクに導入され，有望な改善が見られるようになった．[50,52]は、DNNで直接オブジェクトの回転と変換を回帰させることを提案した。しかし、これらの方法は、[37]で説明された回転空間の非線形性のために、一般化が不十分であった。その代わり，最近の研究では，DNNを利用して物体の2Dキーポイントを検出し，Perspective-n-Point（PnP）アルゴリズムを用いて6Dポーズパラメータを計算している[37,36,41,47]．これらの2段階のアプローチは、より安定した性能を発揮するが、そのほとんどが2Dプロジェクションの上に構築されている。<strong>投影時には小さな誤差でも、実際の3D空間では大きな誤差となる可能性があります。また、2D投影後に3D空間の異なるキーポイントが重なってしまうことがあり、それらを区別することは困難である。さらに、剛体の幾何学的拘束情報は、投影によって部分的に失われてしまう。</strong></p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig1.png" alt="fig1"></p>
+<p>図1．PVN3Dのパイプライン。RGBD画像が入力されると (a)、ディープハフ投票ネットワークを使って、選択されたキーポイントに対するポイントごとの翻訳オフセットを予測する (b)。同じオブジェクト上の各ポイント オブジェクト上の各点が選択されたキーポイントに投票し，クラスタの中心が予測されたキーポイントとして選択される (c)．次に、最小二乗法によるフィッティングを行い、6次元のポーズ・パラメータを推定する (d) ~ (e)。推定されたポーズ・パラメータによって変換されたモデルを図 (f)に示す。</p>
+<hr>
+<p>一方で，安価なRGBDセンサの開発により，より多くのRGBDデータセットが利用可能になっている．Point-Fusion[53]、Frustum pointnets[39]、VoteNet[38]のように、余分な奥行き情報があることで、2Dアルゴリズムを3D空間に拡張し、より良い性能を得ることができる。この目的のために，我々は2Dキーポイントベースのアプローチを3Dキーポイントに拡張し，剛体の幾何学的制約情報を完全に利用することで，6DoF推定の精度を大幅に向上させた．具体的には，図1に示すように，ポイント単位の3Dオフセットを学習し，3Dキーポイントに投票するディープ3Dキーポイントハフ投票ニューラルネットワークを開発しました． **3Dキーポイントとは，3次元空間における剛体の2点間の位置関係が固定されているという単純な幾何学的性質です。**したがって、物体表面上の可視点が与えられた場合、その座標と向きは深度画像から得られ、選択されたキーポイントへの並進オフセットも固定されており、学習可能です。一方、ポイント単位のユークリッドオフセットの学習は、ネットワークにとって簡単で、最適化も容易です。</p>
+<p>また、複数のオブジェクトが存在するシーンを扱うために、インスタンスセマンティックセグメンテーションモジュールをネットワークに導入し、キーポイント投票と共同で最適化を行いました。その結果、これらのタスクを共同で学習することで、お互いのパフォーマンスが向上することがわかりました。具体的には、意味的な情報は、ある点がどの部分に属するかを識別することで、トランスレーション・オフセットの学習を向上させ、トランスレーション・オフセットに含まれるサイズ情報は、外観は似ているがサイズが異なるオブジェクトを区別するのに役立ちます。</p>
+<p>さらに，我々の手法を評価するために，YCB-VideoデータセットとLineMODデータセットを用いた実験を行った．実験の結果，我々の手法は，現在の最先端の手法よりもかなりのマージンで優れていることがわかった．</p>
+<p>要約すると、この作品の主な貢献は以下の通りです。</p>
+<ul>
+<li>単一RGBD画像の6DoFポーズ推定のための、インスタンスセマンティックセグメンテーションを備えた新しいディープ3Dキーポイントハフ投票ネットワーク。</li>
+<li>YCB および LineMOD データセットにおける最新の 6DoF ポーズ推定性能．</li>
+<li>3D-keypointを用いた手法を詳細に分析し、従来の手法と比較した結果、6DoFポーズ推定の性能を向上させるためには、3D-keypointが重要な要素であることを示した。また、3D-keypointとセマンティックセグメンテーションを共同で学習することで、さらに性能が向上することを示しています。</li>
+</ul>
+<h1 id="2-%E9%96%A2%E9%80%A3%E7%A0%94%E7%A9%B6">2. 関連研究</h1>
+<h2 id="21-%E3%83%9B%E3%83%AA%E3%82%B9%E3%83%86%E3%82%A3%E3%83%83%E3%82%AF%E3%83%BB%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89">2.1. ホリスティック・メソッド</h2>
+<p>ホリスティックな手法は、画像内の物体の3次元的な位置と向きを直接推定するものです。古典的なテンプレートベースの手法では，剛体のテンプレートを構築し，画像をスキャンして，最もマッチしたポーズを計算する[21,13,17]．このようなテンプレートは、クラスタ化されたシーンに対してロバストではない。最近、カメラや物体の6Dポーズを直接回帰するDNN（Deep Neural Network）ベースの方法がいくつか提案されている[52,50,14]。しかし、回転空間の非線形性により、データ駆動型DNNの学習と一般化は困難である。この問題に対処するために、いくつかのアプローチでは、ポーズを反復的に改良するためにpost-refinement手順[26,50]を使用し、他のアプローチでは、回転空間を離散させ、分類問題に単純化する[49,43,45]。後者のアプローチでは、離散化によって犠牲になった精度を補うために、ポスト・レフィンメント処理が依然として必要である。</p>
+<h2 id="22-%E3%82%AD%E3%83%BC%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%9F%E6%89%8B%E6%B3%95">2.2. キーポイントを使った手法</h2>
+<p>現在のキーポイントベースの手法は、まず画像内の物体の2Dキーポイントを検出し、次にPnPアルゴリズムを利用して6Dポーズを推定する。古典的な手法[30,42,2]は、豊富なテクスチャを持つオブジェクトの2Dキーポイントを効率的に検出することができる。しかし、これらの手法は、テクスチャのないオブジェクトを扱うことができません。深層学習技術の発展に伴い、ニューラルネットワークベースの2Dキーポイント検出法がいくつか提案されている。[41,47,20]では，キーポイントの2次元座標を直接回帰し，[33,24,34]では，ヒートマップを用いて2次元キーポイントを検出しています．また，[37]では，切り捨てられたシーンやオクルージョンされたシーンをうまく扱うために，2Dキーポイントの位置を投票するためのピクセル単位の投票ネットワークを提案している．これらの2Dキーポイントベースの手法は、オブジェクトの2D投影誤差を最小化することを目的としている。しかし，投影時には小さくても，実際の3D世界では大きな誤差が生じる可能性がある．[46]は，3Dポーズを復元するために，合成RGB画像の2つのビューから3Dキーポイントを抽出しています．しかし，これらはRGB画像しか利用していないため，剛体の幾何学的拘束情報が投影により部分的に失われ，また，3次元空間内の異なるキーポイントは，2次元に投影された後には重なってしまい，識別が困難になる可能性がある．しかし、安価なRGBDセンサーの登場により、撮影した奥行き画像を使って3Dであらゆることができるようになりました。</p>
+<h2 id="23-%E5%AF%86%E3%81%AA%E5%AF%BE%E5%BF%9C%E6%96%B9%E6%B3%95">2.3. 密な対応方法</h2>
+<p>これらのアプローチでは、Hough voting scheme [28,44,12]を利用して、ピクセルごとの予測で最終結果を投票する。これらの手法では、ランダムフォレスト[3,32]またはCNN[23,9,27,35,51]を用いて特徴を抽出し、各ピクセルに対応する3Dオブジェクト座標を予測し、最終的なポーズ結果を投票で決定する。このような高密度の2D-3D対応により、これらの手法は、出力空間が非常に大きくなるものの、オクルージョンのあるシーンに対してロバストになります。PVNet[37]では、2Dキーポイントに対してピクセル単位の投票を行い、Dense法とキーポイントベースの手法の利点を組み合わせています。さらに、この手法を追加の深度情報を持つ3Dキーポイントに拡張し、剛体の幾何学的制約を完全に利用します。</p>
+<h1 id="3-%E6%8F%90%E6%A1%88%E6%89%8B%E6%B3%95">3. 提案手法</h1>
+<p>6DoFポーズ推定の課題は，RGBD画像が与えられたときに，物体をその物体世界座標系からカメラ世界座標系に変換する剛体変換を推定することである。この変換は、3次元回転 $\bm{R}\in SO(3)$ と並進 $t \in \bm{R}^3$ で構成される。</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig2.png" alt="fig2"></p>
+<p>図2．PVN3Dの概要。特徴抽出モジュールは、RGBD画像からポイントごとの特徴を抽出します。それらはモジュール $M_K$、$M_C$、$M_S$ に供給され、それぞれ各ポイントのキーポイント、センターポイント、セマンティックラベルへのトランスレーションオフセットを予測する。次に、クラスタリングアルゴリズムが適用され、同じセマンティックラベルを持つ異なるインスタンスと、同じインスタンス上のポイントがターゲットとなるキーポイントに投票することを区別します。最後に、予測されたキーポイントに最小二乗フィットアルゴリズムを適用し、6DoFポーズパラメータを推定する。</p>
+<hr>
+<h2 id="31-%E6%A6%82%E8%A6%81">3.1. 概要</h2>
+<p>この課題を解決するために，我々は図2に示すように，深層3Dハフ（Hough）投票ネットワークに基づいた新しいアプローチを開発した。提案手法は，3Dキーポイントの検出と，それに続くポーズパラメータのフィッティングモジュールの2段階のパイプラインで構成されている。具体的には、RGBD画像を入力とし、特徴抽出モジュールを使用して、外観特徴とジオメトリ情報を融合する。学習された特徴は、キーポイントに対する各ポイントのオフセットを予測するように学習された、3Dキーポイント検出モジュール $M_K$ に供給されます。さらに、複数のオブジェクトを扱うためのインスタンス・セグメンテーション・モジュールがあり、セマンティック・セグメンテーション・モジュール $M_S$ は、ポイントごとのセマンティック・ラベルを予測し、センター・ボーティング・モジュール $M_C$ は、オブジェクト・センターに対するポイントごとのオフセットを予測する。学習されたポイントごとのオフセットを用いて、クラスタリング・アルゴリズム[7]を適用し、同じセマンティック・ラベルを持つ異なるインスタンスを区別し、同じインスタンス上のポイントがターゲット・キーポイントに投票する。最後に，予測されたキーポイントに最小二乗法によるフィッティングアルゴリズムを適用し，6DoFポーズパラメータを推定する．</p>
+<h2 id="32-%E5%AD%A6%E7%BF%92%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0">3.2. 学習アルゴリズム</h2>
+<p>我々の学習アルゴリズムの目的は、オフセット予測のための3Dキーポイント検出モジュール $M_K$ と、インスタンスレベルのセグメンテーションのためのセマンティックセグメンテーションモジュール $M_S$ とセンター投票モジュール $M_C$ を学習することである。このため、ネットワークの学習はマルチタスク学習となり、我々が設計した教師付き損失といくつかの学習方法を採用することで実現しています。</p>
+<h3 id="3d%E3%82%AD%E3%83%BC%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E6%A4%9C%E5%87%BA%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB">3Dキーポイント検出モジュール</h3>
+<p>図2に示すように，特徴抽出モジュールによって抽出された点ごとの特徴をもとに，3Dキーポイント検出モジュール $M_K$ を用いて，各オブジェクトの3Dキーポイントを検出する。具体的には，$M_K$ は，可視点からターゲットとなるキーポイントまでのポイントごとのユークリッド移動オフセットを予測する．これらの可視点は、予測されたオフセットとともに、ターゲットキーポイントに投票します。投票されたポイントは、クラスタリングアルゴリズムによって集められ、クラスタの中心が投票されたキーポイントとして選択されます。</p>
+<p>$M_K$ をより深く理解するために、以下のように説明する。同一のオブジェクトインスタンス $I$ に属する可視シードポイント ${p_i}^N_{i=1}$ と選択されたキーポイント ${kp_j}^M_{j=1}$ のセットが与えられたとき、 $x_i$ を3次元座標、$f_i$ を抽出された特徴とし、$pi = [xi; fi]$ と表記する。また，キーポイントの3次元座標を $y_j$ とし，$kp_j= [y_j]$ と表記する．$M_K$ は、各シードポイントの特徴量 $f_i$ を吸収し、それらの特徴量に対する並進オフセット ${of^j_i}^M_{j=1}$ を生成する。ここで $of^j_i$ は、$i$ 番目のシードポイントから $j$ 番目のキーポイントへの並進オフセットを表す。そして、投票されたキーポイントは、$vkp^j_i = x_i + of^j_i$ と表される。$of^j_i$ の学習を監視するために、L1損失を適用する。</p>
+<p>$L_{keypoints} = \frac{1}{N} \sum^N_{i=1} \sum^M_{j=1} \left|\left| of^j_i - of^{j \ast}_i \right|\right| I \hspace{-1pt}I (p_i \in \bm{I})$</p>
+<p>ここで，$of^{j\ast}_i$ はグランドトゥルースの並進オフセット，$M$ は選択されたターゲットキーポイントの総数，$N$ はシードの総数、$I \hspace{-1pt}I$ は点 $p_i$ がインスタンス $I$ に属する場合のみ1、そうでない場合は0となる指示関数である。</p>
+<h3 id="%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%83%BB%E3%82%BB%E3%83%9E%E3%83%B3%E3%83%86%E3%82%A3%E3%83%83%E3%82%AF%E3%82%BB%E3%82%B0%E3%83%A1%E3%83%B3%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB">インスタンス・セマンティックセグメンテーションモジュール</h3>
+<p>複数のオブジェクトが存在するシーンを処理するために、従来の手法[50,53,39]では、既存の検出アーキテクチャやセマンティックセグメンテーションアーキテクチャを利用して画像を前処理し、単一のオブジェクトのみを含むROI（region of interest）を取得していました。そして、抽出したROIを入力としてポーズ推定モデルを構築することで、問題を単純化している。しかし、我々はポーズ推定問題を、キーポイントへの変換オフセット学習モジュールを用いて、最初にオブジェクトのキーポイントを検出するように定式化したので、この2つのタスクはお互いのパフォーマンスを向上させることができると考えています。一方で、セマンティックセグメンテーションモジュールは、異なるオブジェクトを区別するために、モデルにインスタンス上のグローバルおよびローカルな特徴を抽出させます。一方、キーポイントへのオフセットを予測するために学習されたサイズ情報は、外観は似ているがサイズが異なるオブジェクトを区別するのに役立ちます。このような観点から、我々は点単位のインスタンスセマンティックセグメンテーションモジュール $M_S$ をネットワークに導入し、モジュール $M_K$ と共同で最適化を行った。</p>
+<p>具体的には，ポイントごとに抽出された特徴が与えられると，セマンティック・セグメンテーション・モジュール $M_S$ は，ポイントごとのセマンティック・ラベルを予測する．このモジュールをFocal Loss [29]で監視します。</p>
+<p>$L_{semantic} = -\alpha \left(1-q_i \right)^\gamma \log \left(q_i \right)$<br>
+$where \hspace{8pt} q_i = c_i \cdot l_i$</p>
+<p>ここで、$\alpha$ は $\alpha$ バランスパラメータ、$\gamma$ はフォーカシングパラメータ、$c_i$ は $i$ 番目の点が各クラスに属する予測信頼度、$l_i$ はグランドトゥルースのクラスラベルのワンショット表現である。</p>
+<p>一方、中心投票モジュール $M_C$ は、異なるインスタンスを区別するために、異なるオブジェクトの中心に投票するために適用されます。このモジュールはCenterNet[10]を参考にしているが、2Dの中心点を3Dに拡張したものである。2次元の中心点に比べて、3次元の異なる中心点は、視点によってはカメラの投影によるオクルージョンの影響を受けません。中心点は、物体の特別なキーポイントとみなすことができるので、モジュール $M_C$ は、3Dキーポイント検出モジュール $M_K$ と似ています。このモジュールでは、各ポイントの特徴を取り込みつつ、そのポイントが属するオブジェクトの中心に対するユークリッド移動オフセット $\Delta x_i$ を予測する。また、$\Delta x_i$の学習は、L1損失によって監督される。</p>
+<p>$L_{center} = \frac{1}{N}\sum^{N}_{i=1} \left|\left| \Delta x_i - \Delta x^\ast_i \right| \right| I \hspace{-1pt}I (p_i \in \bm{I})$</p>
+<p>ここで，$N$ は物体表面上の種点の総数を表し，$\Delta x^\ast_i$ は種点 $p_i$ からインスタンス中心までのグランドトゥルース並進オフセットである。$I \hspace{-1pt}I$ は、点 $p_i$ がそのインスタンスに属するかどうかを示す指示関数である。</p>
+<h3 id="%E3%83%9E%E3%83%AB%E3%83%81%E3%82%BF%E3%82%B9%E3%82%AF%E6%90%8D%E5%A4%B1">マルチタスク損失</h3>
+<p>私たちは、モジュール$M_K$、$M_S$、$M_C$ の学習を、マルチタスク・ロスと共同で監督します。</p>
+<p>$L_{multi-task} = \lambda_1 L_{keypoints} +  \lambda_2 L_{semantic} +  \lambda_3 L_{center}$</p>
+<p>ここで、$\lambda_1$、$\lambda_2$、$\lambda_3$は、各タスクの重みです。実験結果によると、これらのタスクを共同で学習することで、互いのパフォーマンスが向上することがわかりました。</p>
+<h2 id="33-%E8%A8%93%E7%B7%B4%E3%81%A8%E5%AE%9F%E8%A3%85">3.3. 訓練と実装</h2>
+<h3 id="%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E6%A7%8B%E9%80%A0">ネットワーク構造</h3>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig2.png" alt="fig2"></p>
+<p>図2の最初の部分は，特徴抽出モジュールである。このモジュールでは，RGB 画像の外観情報を抽出するために，ImageNet [8] を前処理した ResNet34 [16] を用いた PSPNet [54] を適用している．PointNet++ [40] は，点群とその法線マップから形状情報を抽出します．これらの情報は，DenseFusionブロック[50]によってさらに融合され，各点の結合された特徴が得られます．このモジュールの処理後、各点 $p_i$ は、$C$ 次元の特徴 $f_i \in \mathbb{R}^C$ を持つ。次のモジュール $M_K$，$M_S$，$M_C$ は，図2に示す共有の多層パーセプトロン（MLP）で構成されている。RGBD画像の各フレームについて、$N=12288$点（ピクセル）をサンプリングし、数式4で $\lambda_1=\lambda_2=\lambda_3=1.0$ と設定する。</p>
+<h3 id="%E3%82%AD%E3%83%BC%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E3%81%AE%E9%81%B8%E6%8A%9E">キーポイントの選択</h3>
+<p>3Dキーポイントは、3Dオブジェクトモデルから選択されます。3Dオブジェクト検出アルゴリズム[39,53,38]では、3Dバウンディングボックスの8つのコーナーが選択される。しかし、これらのバウンディングボックスのコーナーは、オブジェクト上のポイントから遠く離れた仮想的なポイントであるため、ポイントベースのネットワークでは、その近傍のシーンコンテキストを集約することが困難である。また、物体上の点までの距離が長くなると、定位誤差が大きくなり、6次元ポーズパラメータの計算に支障をきたす可能性があります。その代わり、物体の表面から選択されたポイントは非常に優れています。そこで、[37]に従い、FPS（farthest point sampling）アルゴリズムを用いて、メッシュ上のキーポイントを選択します。具体的には、空のキーポイントセットにオブジェクトモデルの中心点を追加することで、選択手順を開始します。その後，$M$ 個のキーポイントが得られるまで，選択されたすべてのキーポイントから最も遠いメッシュ上の新しいポイントを繰り返し追加して更新する．</p>
+<h3 id="%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%97%E6%B3%95%E3%81%AB%E3%82%88%E3%82%8B%E3%83%95%E3%82%A3%E3%83%83%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">最小二乗法によるフィッティング。</h3>
+<p>カメラ座標系で検出された $M$ 個のキーポイント ${kp_j}^M_{j=1}$ と，物体座標系で検出された対応点${kp'<em>j}M</em>{j=1}$の2つの点セットが与えられた場合，6次元姿勢推定モジュールは，以下の二乗損失を最小化することで $R$ と $t$ を求める最小二乗フィットアルゴリズム[1]を用いて，ポーズパラメータ$(R, t)$ を計算します．</p>
+<p>$L_{least-squares}= \sum^M_{j=1} \left|\left|k p_j - \left(R \cdot kp'_j + t \right) \right|\right|^2$</p>
+<p>ここで、$M$ は、オブジェクトの選択されたキーポイントの数です。</p>
+<h1 id="4-%E5%AE%9F%E9%A8%93">4. 実験</h1>
+<h2 id="41-%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88">4.1. データセット</h2>
+<p>この手法を2つのベンチマークデータセットで評価しました。</p>
+<h3 id="ycb-video-dataset">YCB-Video Dataset</h3>
+<p>YCB-Video Datasetには，様々な形状と質感を持つ21個のYCB [4]オブジェクトが含まれている．このサブセットのオブジェクトの92個のRGBDビデオがキャプチャされ、6Dポーズとインスタンスセマンティックマスクでアノテーションされました。このデータセットは，様々な照明条件，大きな画像ノイズ，そしてオクルージョンがあるため，難しいものとなっています．我々は[52]に従い、データセットをトレーニング用の80個のビデオと、テスト用の残りの12個のビデオから選ばれた2,949個のキーフレームに分割する。また、[52]に従い、合成画像をトレーニングセットに追加する。また、深度画像の品質を向上させるために、穴埋めアルゴリズム[25]を適用する。</p>
+<h3 id="linemod-dataset">LineMOD Dataset</h3>
+<p>LineMOD データセット[18] は 13 個の動画に含まれる 13 個の低テクスチャの物体と，6 次元のポーズとインスタンスマスクから構成されている．このデータセットの主な課題は，散らかったシーン，テクスチャのない物体，照明の変化である．我々は、先行研究[52]に従い、トレーニングセットとテストセットを分割する。また、[37]に従い、合成画像をトレーニングセットに追加している。</p>
+<h2 id="42-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99">4.2. 評価指標</h2>
+<p>我々は[52]に従い、平均距離ADDおよびADD-Sメトリックを用いて我々の手法を評価した[52]。平均距離ADD指標[19]は、予測された6次元ポーズ $\left[R, t \right]$ とグランドトゥルースのポーズ $\left[R^\ast, t\ast \right]$ で変換されたオブジェクトの頂点間の平均ペアワイズ距離を評価します。</p>
+<p>$ADD = \frac{1}{m} \sum_{x \in O} \left|\left|\left(Rx + t \right) - \left(R^\ast x + t^\ast \right) \right|\right|$</p>
+<p>ここで，$x$ はオブジェクトメッシュ $O$ 上の全 $m$ 個の頂点である．ADD-Sメトリックは対称的なオブジェクトを対象としており、平均距離は最近接点距離に基づいて計算されます。</p>
+<p>$ADD-S = \frac{1}{m} \sum_{x_1 \in O} \min_{x_2 \in O} \left|\left|\left(Rx_1 + t \right) - \left(R^\ast x_2 + t^\ast \right) \right|\right|$</p>
+<p>評価については[52,50]に従い、評価の際に距離の閾値を変化させて得られる精度-閾値曲線下の面積であるADD-S AUCを計算する。また、ADD(S)[19]AUCも同様に計算するが、非対称なオブジェクトにはADD距離を、対称なオブジェクトにはADD-S距離を計算する。</p>
+<h2 id="43-ycb-video%E3%81%A8linemod%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E3%81%A7%E3%81%AE%E8%A9%95%E4%BE%A1">4.3. YCB-VideoとLineMODデータセットでの評価</h2>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab1.png" alt="tab1"></p>
+<p>表1．YCB-Video Datasetにおける6D Poseの定量的評価（ADD-S AUC [52]，ADD(S) AUC [19]）．対称的なオブジェクトの名前 は太字である．</p>
+<hr>
+<p>表1は，YCB-Videoデータセットに含まれる21個のオブジェクトすべてに対する評価結果を示しています．我々のモデルと他のシングルビュー手法を比較している。 表に示されているように，反復的な精密化手順を持たない我々のモデル（PVN3D）は，反復的な精密化を行った場合でも，他のすべてのアプローチを大差で上回っている．ADD(S)指標では，我々のモデルはPoseCNN+ICP[52]を6.4%上回り，DF(iterative)[50]を5.7%上回っている．また，反復的な改良により，我々のモデル（PVN3D+ICP）はさらに優れた性能を達成している．なお，このデータセットでは，大型クランプと超大型クランプを区別することが課題となっているが，従来の手法[50,52]では検出結果が不十分であった．また、グランドトゥルース・セグメンテーションを用いた評価結果を表2に示しますが、PVN3Dが依然として最高の性能を達成していることがわかります。また、定性的な結果を図3に示します。表3はLineMODデータセットでの評価結果である．PVN3Dが最も優れた性能を発揮していることがわかる．</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab2.png" alt="tab2"></p>
+<p>表2．YCB-Videoデータセットでの定量的評価結果 セマンティック・セグメンテーションのグランド・トゥルース・インスタンスとの比較。</p>
+<hr>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig3.png" alt="fig3"></p>
+<p>図3．YCB-Videoデータセットでの定性結果。同一シーン内の異なるメッシュ上の点は異なる色で表示されている。それらは 予測されたポーズによって変換された後、画像に投影される。PVN3Dは、反復的なリファインメントを行わずに、DenseFusionと比較しています。と、反復改良（2回）を行ったDenseFusionを比較しています。我々のモデルは、難易度の高い大型クランプと超大型クランプを区別し、それらのポーズをうまく推定します。クランプを区別し、それらのポーズを適切に推定します。また、このモデルはオクルージョンの多いシーンでも安定しています。</p>
+<hr>
+<h3 id="%E3%82%AA%E3%82%AF%E3%83%AB%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%B3%E3%81%AB%E9%A0%91%E5%81%A5">オクルージョンシーンに頑健</h3>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig4.png" alt="fig4"></p>
+<p>図4.  YCB-Videoデータセットにおける，オクルージョンのレベルを上げた場合の各手法の性能．</p>
+<hr>
+<p>我々の3Dキーポイントベースの手法の最大の利点の一つは、オクルージョンに強いことです。オクルージョンの度合いによって異なる手法がどのような影響を受けるかを調べるために、[50]に従い、物体表面の不可視点の割合を計算します。不可視面の割合が異なる場合のADD-S &lt; 2cmの精度を図4に示します。不可視点の割合が50%の場合、異なるアプローチの性能は非常に近いものとなります。しかし、不可視部分の割合が増加すると、DenseFusionとPoseCNN+ICPは我々のモデルと比較して早く落ちてしまいます。図3は、オブジェクトが大きく隠されている場合でも、我々のモデルが良好に動作することを示している。</p>
+<h2 id="44-%E3%82%A2%E3%83%96%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E8%A9%A6%E9%A8%93">4.4. アブレーション試験</h2>
+<p>このパートでは、6DoFポーズ推定のためのさまざまな方式の影響と、キーポイント選択方法の効果を調べます。また、マルチタスク学習の効果についても調べます。</p>
+<h3 id="%E3%83%9D%E3%83%BC%E3%82%BA%E3%82%92%E7%9B%B4%E6%8E%A5%E5%9B%9E%E5%B8%B0%E3%81%95%E3%81%9B%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%A8%E3%81%AE%E6%AF%94%E8%BC%83">ポーズを直接回帰させる場合との比較。</h3>
+<p>我々の 3D キーポイント・ベースの手法と，物体の 6D ポーズ・パラメータ $\left[R,t \right]$ を直接回帰する手法とを比較す るために，我々は単に 3D キーポイント投票モジュール $M_K$ を修正して，各ポイントの四元回転 $R$ と並進パラメータ $t$ を直接回帰させる．また，DenseFusion [50] に従って信頼度ヘッダを追加し，信頼度が最も高いポーズを最終的な提案ポーズとして選択する．また，DenseFusion に続いて信頼度正則化項[50]を加えた ShapeMatch-Loss[52]を用いて学習過程を監視する．表4の実験結果によると、我々の3Dキーポイントの定式化はかなり良い結果を示している。</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab4.png" alt="tab4"></p>
+<p>表4. YCB-Videoデータセットにおける6D Poseの定量的評価。すべて我々が予測したセグメンテーションによるもの。</p>
+<hr>
+<p>また，ネットワークアーキテクチャの違いによる影響を排除するために，DenseFusion(per-pixel)のヘッダを変更して，ポイントごとのトランスレーションオフセットを予測し，キーポイントの投票と最小二乗法によるフィッティング手順に従って6Dポーズを計算した。表4では、3Dキーポイントの定式化である $DF(3D KP)$ は、$RT$ 回帰の定式化である $DF(RT)$ よりも性能が良いことがわかります。これは、3Dキーポイントのオフセット探索空間が、ニューラルネットワークが学習しやすい回転の非線形性空間よりも小さく、より一般化が可能なためです。</p>
+<h3 id="2d%E3%82%AD%E3%83%BC%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E3%81%A8%E3%81%AE%E6%AF%94%E8%BC%83">2Dキーポイントとの比較。</h3>
+<p>2Dと3Dのキーポイントの影響を対比させるために，投票された3Dキーポイントをカメラの固有パラメータを用いて2Dに投影する．そして，ランダムサンプルコンセンサスを用いたPnPアルゴリズム (RANSAC) を適用して，6次元ポーズパラメータを算出する．表4は、3Dキーポイントを用いたアルゴリズム（表中ではOurs(3D KP)と表記）が、2Dキーポイントを用いたアルゴリズム（表中ではOurs(2D KP)と表記）よりも、ADD-S指標で13.7%上回っていることを示している。これは、PnPアルゴリズムが投影誤差の最小化を目的としているためです。しかし、投影時には小さくても、3Dの実世界ではかなり大きなポーズ推定誤差が発生する可能性があります。</p>
+<p>また、インスタンスセマンティックセグメンテーションモジュールでは、2Dと3Dの中心点の影響を比較するために、我々が投票した3Dの中心点を2Dに投影している（Ours(2D KPC)）。その結果、オクルージョンのあるシーンでは、2Dに投影された中心点が互いに近くにある場合には、異なるインスタンスを区別することは困難であるが、3Dの実世界では互いに遠くにあり、容易に区別することができることがわかった。なお、ヒートマップ[33,24,34]やベクトル投票[37]などの他の既存の2Dキーポイント検出アプローチでも、キーポイントの重なりに悩まされることがある。定義によれば、日常生活におけるほとんどの物体の中心は、通常は物体内にあるため重ならないが、2Dに投影した後は重なる可能性がある。つまり、物体の世界は3Dであり、3D上でモデルを構築することは非常に重要であると考えています。</p>
+<h3 id="dense-correspondence-exploring%E3%81%A8%E3%81%AE%E6%AF%94%E8%BC%83">Dense Correspondence Exploringとの比較。</h3>
+<p>3Dキーポイント・オフセット・モジュール $M_K$ を改良し、物体座標系における各ポイントの対応する3D座標を出力し、最小二乗フィット・アルゴリズムを適用して 6DoF ポーズを計算します。また，対応する3D座標の学習を監視するために，数式3と同様の L1 損失を適用した．評価結果は表4のOrs(corr)で示されており、我々の3Dキーポイント方式が依然としてかなり良い性能を示していることがわかります。我々は、物体座標の回帰はキーポイントの検出よりも難しいと考えています。なぜなら、モデルは、画像中のメッシュの各ポイントを認識し、オブジェクト座標系におけるその座標を記憶しなければならないからです。しかし、カメラシステム内のオブジェクト上のキーポイントを検出することは、多くのキーポイントが目に見え、モデルがキーポイントの近傍のシーンコンテキストを集約できるため、より簡単です。</p>
+<h3 id="3d%E3%82%AD%E3%83%BC%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E9%81%B8%E6%8A%9E%E3%81%AE%E5%8A%B9%E6%9E%9C">3Dキーポイント選択の効果</h3>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab5.png" alt="tab5"></p>
+<p>表 5. PVN3D の異なるキーポイント選択法の効果。BBox8 と比較するための単純なベースラインとして、別の 3D バウンディングボックス検出手法である VoteNet[38] の結果を追加しています。</p>
+<hr>
+<p>このパートでは、3Dバウンディングボックスの8つのコーナーを選択し、FPSアルゴリズムから選択されたポイントと比較します。また、FPSによって生成されたキーポイントの数が異なることも考慮しています。表5によると、FPSアルゴリズムによってオブジェクト上に選択されたキーポイントは、我々のモデルがより良い性能を発揮できることを示しています。これは、バウンディングボックスの角が、オブジェクト上の点から離れた仮想的な点であるためです。そのため、ポイントベースのネットワークでは、この仮想コーナーポイントの近傍のシーンコンテキストを集約することが困難です。また、FPSアルゴリズムで選択された8つのキーポイントは、我々のネットワークが学習するのに適した選択です。キーポイントの数が多ければ多いほど、最小二乗フィットモジュールでポーズを復元する際のエラーを排除しやすくなりますが、出力空間が大きくなるため、ネットワークの学習が難しくなります。8個のキーポイントを選択することは、良いトレードオフとなります。</p>
+<h3 id="%E3%83%9E%E3%83%AB%E3%83%81%E3%82%BF%E3%82%B9%E3%82%AF%E5%AD%A6%E7%BF%92%E3%81%AE%E5%8A%B9%E6%9E%9C">マルチタスク学習の効果</h3>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab6.png" alt="tab6"></p>
+<p>表 6. YCB-Video ataset に含まれる全てのオブジェクトに対する、異なるインスタンスのセマンティックセグメンテーションを用いた PVN3D の性能。MK、MS、MCはそれぞれPVN3Dのキーポイントオフセットモジュール、セマンティックセグメンテーション、センターポイントオフセットモジュールを示す。また、+MRC は Mask R-CNN のセグメンテーション結果を用いた推論、+GT はグランドトゥルースのセグメンテーションを示す。</p>
+<hr>
+<p>このパートでは、セマンティックセグメンテーションとキーポイント（中心）のトランスレーションオフセットの共同学習がどのように性能を向上させるかについて説明する。表6では、セマンティックセグメンテーションがキーポイントオフセット学習をどのように向上させるかを調べている。ここでは、セマンティックセグメンテーションと中心値投票モジュール $M_S$, $M_C$ を削除し、キーポイント投票モジュール $M_K$ を個別に学習する。 推論時には、Mask R-CNN [15]で予測したインスタンスのセマンティックセグメンテーション $(M_K + MRC)$ とグランドトゥルース $(M_K+GT)$ を適用する。実験結果によると、セマンティックセグメンテーションを併用して学習した場合$(M_{K,S} + GT)$、キーポイントオフセット投票の性能が向上し、6次元ポーズ推定の精度が $ADD(S)$ メトリックで0.7%向上した。 セマンティック・モジュールは、異なるオブジェクトを区別するためのグローバルおよびローカルな特徴を抽出すると考えています。また、このような特徴は、点がオブジェクトのどの部分に属しているかをモデルが認識するのに役立ち、オフセット予測を向上させます。</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/tab7.png" alt="tab7"></p>
+<p>表7. YCB-Videoデータセットにおける各手法のインスタンスセマンティックセグメンテーション結果（mIoU(%)）。セマンティック・セグメンテーション・モジュールとキーポイント・オフセット・モジュール（MS,K）を一緒に学習させると、オフセット・モジュールからサイズ情報を得ることができ、特に大クランプと特大クランプではより良い結果が得られる。中心投票モジュールMCとMean-Shiftクラスタリングアルゴリズムにより、さらなる性能向上が得られる。</p>
+<hr>
+<p>表7では、キーポイントとセンターポイントのオフセット学習によって、インスタンスのセマンティックセグメンテーション結果がどのように改善されるかを調べています。評価指標には、mIoU（point mean intersection over union）を用いています。 ここでは、YCB-Videoデータセットで挑戦した大型クランプと超大型クランプの結果を報告します。 図5に示すように、これらは見た目は同じですが、大きさが異なります。単純なベースラインとして，Mask R-CNN(ResNeXt-50-FPN) [15]を推奨設定で学習させたところ，この2つの物体に完全に混乱してしまいました．また、奥行き情報を追加した場合、セマンティックセグメンテーションモジュール（PVN3D(MS)）を個別に学習させたところ、こちらもうまくいきませんでした。しかし、キーポイントオフセット投票モジュール（PVN3D(MS,K)）と共同で学習したところ、特大のクランプでmIoUが9.2%向上しました。センター投票モジュールMCで得られた投票済みセンターを用いて、Mean-Shiftクラスタリングアルゴリズムでオブジェクトを分割し、その最も近いオブジェクトクラスタにポイントを割り当てることができます。この方法により、特大クランプのmIoUはさらに18.3％向上します。いくつかの定性的な結果を図5に示します。</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/AI%E6%8A%80%E8%A1%93%E5%BF%9C%E7%94%A8/%E7%89%A9%E4%BD%93%E6%A4%9C%E5%87%BA/PVN3D%20A%20Deep%20Point-Wise%203D%20Keypoints%20Voting%20Network%20for%206DoF%20Pose%20Estimation/%E7%94%BB%E5%83%8F/fig5.png" alt="fig5"></p>
+<p>図5.難易度の高いYCB-Videoデータセットにおけるセマンティックセグメンテーションの定性的結果。(a)はグランドトゥルースのラベルを示しています。大型クランプは緑色、特大クランプはオレンジ色と、オブジェクトごとに異なる色でラベル付けされています。(b)-(c)では、単純なベースラインであるPoseCNN[52]とMask R-CNN[15]は、2つのオブジェクトに惑わされています。(d)では、セマンティック・セグメンテーション・モジュールであるMSを個別に学習させたところ、この2つの物体をうまく区別することができませんでした。(e)では、キーポイントオフセット投票モジュールMKとMSを共同で学習することで、より良い結果が得られました。(f)では、投票された中心とMean-Shiftクラスタリングアルゴリズムにより、我々のモデルは2つのオブジェクトをうまく区別することができる。</p>
+<hr>
+<h1 id="5-%E7%B5%90%E8%A8%80">5. 結言</h1>
+<p>我々は、6DoFポーズ推定のためのインスタンスセマンティックセグメンテーションを用いた新しい深層3Dキーポイント投票ネットワークを提案し、いくつかのデータセットにおいて従来のアプローチよりも大きなマージンで優れた結果を得た。また、3Dキーポイントとセマンティックセグメンテーションを同時に学習することで、お互いの性能を高めることができることを示しています。3Dキーポイントに基づいたアプローチは、6DoFポーズ推定問題を解決するための有望な方向性であると考えています。</p>
+
+
+</body>
+
+</html>
