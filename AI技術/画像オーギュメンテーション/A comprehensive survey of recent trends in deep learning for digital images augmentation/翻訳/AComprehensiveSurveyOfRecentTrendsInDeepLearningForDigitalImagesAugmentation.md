@@ -287,4 +287,4 @@ Auto Augment（AA）は、もともとCubuk and et al.が発表したもので�
 
 リモートセンシングは、半径方向からの反射・放射を計算することで、環境の物理的特性を検出・追跡する重要な分野です（通常は衛星や航空機から）。世界中の多くの研究者が、リモートセンシング領域のモデルを改善するために、画像データの補強を行っています。表4は、さまざまなリモートセンシング領域で画像データ増強技術を使用した選りすぐりの研究成果をまとめたものである。
 
-![tab4]()
+![tab4](https://raw.githubusercontent.com/rurusasu/paper/master/AI%E6%8A%80%E8%A1%93/%E7%94%BB%E5%83%8F%E3%82%AA%E3%83%BC%E3%82%AE%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3/A%20comprehensive%20survey%20of%20recent%20trends%20in%20deep%20learning%20for%20digital%20images%20augmentation/%E7%94%BB%E5%83%8F/tab4.png)
