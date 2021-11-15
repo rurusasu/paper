@@ -1,13 +1,13 @@
 # Going Deeper with Convolutions
 
 # 備考
-# 著者
+## 著者
 
 Christian Szegedy, Wei Liu, Yangqing Jia, Pierre Sermanet, Scott Reed, Dragomir Anguelov, Dumitru Erhan, Vincent Vanhoucke, Andrew Rabinovich
 
-# 掲載
+## 掲載
 
-"Going Deeper with Convolutions", Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)，pp.1--9, 2015．
+"Going Deeper with Convolutions", Procs. of IEEE Conference on Computer Vision and Pattern Recognition (CVPR)，pp.1--9, 2015．
 
 # Abstract
 我々は、ImageNet Large-Scale Visual Recognition Challenge 2014 (ILSVRC14)において、分類と検出で新しい状態を達成した、コードネームInceptionと呼ばれる深層畳み込みニューラルネットワークアーキテクチャを提案する。このアーキテクチャの最大の特徴は、ネットワーク内のコンピューティングリソースの利用率を向上させたことです。慎重に作られた設計により、計算機予算を一定に保ちながら、ネットワークの深さと幅を増やしました。また、品質を最適化するために、ヘブの原理とマルチスケール処理の直感に基づいてアーキテクチャを決定しました。ILSVRC14に提出した「GoogLeNet」は、22層の深さを持つネットワークで、その品質は分類と検出の文脈で評価されています。
